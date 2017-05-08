@@ -1,0 +1,35 @@
+<idea-plugin>
+  <id>com.github.novotnyr.consul-intellij-plugin</id>
+  <name>Consul K/V Support</name>
+  <version>0.1</version>
+  <vendor url="http://github.com/novotnyr">Robert Novotny</vendor>
+
+  <description><![CDATA[
+      Consul K/V support plugin.
+    ]]></description>
+
+  <change-notes><![CDATA[
+      <em>0.1</em> Initial release
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="145.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <toolWindow id="Consul" anchor="right" icon="/icons/plus.png" factoryClass="com.github.novotnyr.idea.consul.ToolWindowFactory"/>
+    <applicationConfigurable instance="com.github.novotnyr.idea.consul.config.ui.ConsulConfigurable" />
+    <applicationService
+            serviceImplementation="com.github.novotnyr.idea.consul.config.ConsulConfigurationPersistentService"/>
+  </extensions>
+
+  <actions>
+  </actions>
+
+</idea-plugin>
