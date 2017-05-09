@@ -5,6 +5,7 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -35,7 +36,7 @@ public class ConsulHostPanel extends JPanel {
 
     private JLabel passwordLabel = new JLabel("HTTP Basic Password");
 
-    private JTextField passwordTextField = new JTextField();
+    private JPasswordField passwordTextField = new JPasswordField();
 
     public ConsulHostPanel() {
         setLayout(new GridBagLayout());
@@ -112,7 +113,7 @@ public class ConsulHostPanel extends JPanel {
         return userTextField;
     }
 
-    public JTextField getPasswordTextField() {
+    public JPasswordField getPasswordTextField() {
         return passwordTextField;
     }
 }

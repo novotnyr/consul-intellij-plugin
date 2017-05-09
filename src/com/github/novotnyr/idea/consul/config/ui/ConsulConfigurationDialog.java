@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class ConsulConfigurationDialog extends DialogWrapper {
@@ -54,6 +55,9 @@ public class ConsulConfigurationDialog extends DialogWrapper {
         String text = textField.getText();
         if(text.isEmpty()) {
             return null;
+        }
+        if(textField instanceof JPasswordField) {
+            return new String(((JPasswordField) textField).getPassword());
         }
         return text;
     }
