@@ -77,6 +77,26 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         return column.getDescription();
     }
 
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        Column column = COLUMNS.get(columnIndex);
+        switch (column) {
+            case HOST:
+                return String.class;
+            case PORT:
+                return Integer.class;
+            case ACL_TOKEN:
+                return String.class;
+            case DATACENTER:
+                return String.class;
+            case USER:
+                return String.class;
+            case PASSWORD:
+                return Boolean.class;
+        }
+        return super.getColumnClass(columnIndex);
+    }
+
     public List<ConsulConfiguration> getConfigurationList() {
         return Collections.unmodifiableList(this.configurationList);
     }
