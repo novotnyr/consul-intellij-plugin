@@ -6,6 +6,7 @@ import com.intellij.util.ui.JBUI;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -87,6 +88,8 @@ public class ConsulHostPanel extends JPanel {
 
         add(this.passwordLabel, cLabel);
         add(this.passwordTextField, cTextField);
+
+        setPreferredSize(new Dimension(400, -1));
     }
 
     public JTextField getHostTextField() {
