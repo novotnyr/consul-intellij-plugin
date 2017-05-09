@@ -16,11 +16,12 @@ public abstract class AbstractEntryAction extends AnAction {
 
     protected KeyAndValue selectedKeyAndValue;
 
+    private boolean enabled = false;
+
     public AbstractEntryAction(Consul consul, MessageBus messageBus, String text, String description, Icon icon) {
         super(text, description, icon);
         this.consul = consul;
         this.messageBus = messageBus;
-        getTemplatePresentation().setEnabled(true);
     }
 
     @Override
@@ -40,9 +41,9 @@ public abstract class AbstractEntryAction extends AnAction {
     public void update(AnActionEvent event) {
         if ("ConsulExplorer".equals(event.getPlace())) {
             KeyAndValue selectedKeyAndValue = (KeyAndValue) event.getDataContext().getData("selectedKeyAndValue");
-            event.getPresentation().setEnabled(selectedKeyAndValue != null);
-
+            this.enabled = selectedKeyAndValue != null;
             this.selectedKeyAndValue = selectedKeyAndValue;
         }
+        event.getPresentation().setEnabled(this.enabled);
     }
 }
