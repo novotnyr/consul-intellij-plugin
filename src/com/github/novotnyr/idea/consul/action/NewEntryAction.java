@@ -40,7 +40,7 @@ public class NewEntryAction extends AbstractEntryAction {
         panel.add(valueTextField);
 
         DialogBuilder builder = new DialogBuilder()
-                .title("Delete an entry")
+                .title("New Entry")
                 .centerPanel(panel);
         if(builder.showAndGet()) {
             KeyAndValue keyAndValue = new KeyAndValue(fqn + keyTextField.getText(), valueTextField.getText());
