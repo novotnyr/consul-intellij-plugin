@@ -11,7 +11,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
@@ -40,11 +42,15 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
         Map<String, String> map = Optional.ofNullable(kvValues)
                 .orElse(Collections.emptyList())
                 .stream()
-                .collect(Collectors.toMap(GetValue::getKey, this::getValue));
+                .collect(Collectors.toMap(GetValue::getKey, ConsulTreeLoadingWorker::getValue, throwingMerger(), TreeMap::new));
         return load(map, treeRootNode);
     }
 
-    private String getValue(GetValue getValue) {
+    private static <T> BinaryOperator<T> throwingMerger() {
+        return (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); };
+    }
+
+    private static String getValue(GetValue getValue) {
         if (getValue == null || getValue.getValue() == null) {
             return "null";
         }
