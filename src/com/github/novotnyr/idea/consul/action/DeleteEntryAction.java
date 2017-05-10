@@ -4,6 +4,7 @@ import com.github.novotnyr.idea.consul.Consul;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogBuilder;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.util.messages.MessageBus;
 
 import javax.swing.JLabel;
@@ -27,6 +28,10 @@ public class DeleteEntryAction extends AbstractEntryAction {
         DialogBuilder builder = new DialogBuilder()
                 .title("Delete an entry")
                 .centerPanel(keyLabel);
-        return builder.showAndGet();
+
+        int result = Messages.showYesNoDialog("Delete the entry " + fqn + "?",
+                "Delete Entry",
+                Messages.getQuestionIcon());
+        return result == Messages.YES;
     }
 }
