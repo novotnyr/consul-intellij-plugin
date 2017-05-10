@@ -12,6 +12,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.util.Collections;
+import java.util.List;
 
 public class ConsulTreeModel extends AbstractTreeModel implements TreeWillExpandListener, TreeSelectionListener {
     private JTree tree;
@@ -96,6 +98,26 @@ public class ConsulTreeModel extends AbstractTreeModel implements TreeWillExpand
 
     public void setOnValueSelectedListener(OnValueSelectedListener onValueSelectedListener) {
         this.onValueSelectedListener = onValueSelectedListener;
+    }
+
+    public DefaultMutableTreeNode getNode(KeyAndValue keyAndValue) {
+        String[] components = keyAndValue.getFullyQualifiedKey().split("/");
+
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) getRoot();
+        for (int i = 0; i < components.length; i++) {
+            List<DefaultMutableTreeNode> children = Collections.list(node.children());
+            for (DefaultMutableTreeNode child : children) {
+                KeyAndValue childKV = (KeyAndValue) child.getUserObject();
+                if (childKV.getKey().equals(components[i])) {
+                    node = child;
+                    break;
+                }
+            }
+        }
+        if(node == getRoot()) {
+            return null;
+        }
+        return node;
     }
 
     public interface OnValueSelectedListener {

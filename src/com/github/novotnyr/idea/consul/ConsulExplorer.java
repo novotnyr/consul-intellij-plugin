@@ -2,6 +2,7 @@ package com.github.novotnyr.idea.consul;
 
 import com.github.novotnyr.idea.consul.action.ConsulConfigurationComboBoxAction;
 import com.github.novotnyr.idea.consul.action.DeleteEntryAction;
+import com.github.novotnyr.idea.consul.action.ExportFolderAction;
 import com.github.novotnyr.idea.consul.action.NewEntryAction;
 import com.github.novotnyr.idea.consul.action.NewFolderAction;
 import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
@@ -47,6 +48,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
 
     private final MessageBusConnection busConnection;
 
+    private ExportFolderAction exportFolderAction;
+
     public ConsulExplorer(Project project) {
         super(true);
 
@@ -64,6 +67,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
 
         this.consulPanel = new ConsulPanel(this.consul, messageBus);
         this.consulPanel.setTreeValueSelectedListener(this::onTreeValueSelected);
+
+        this.exportFolderAction.setTreeModel(this.consulPanel.getTreeModel());
 
         setContent(ScrollPaneFactory.createScrollPane(this.consulPanel));
 
@@ -110,6 +115,9 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         this.updateEntryAction = new UpdateEntryAction(this.consul, this.project.getMessageBus());
         group.add(updateEntryAction);
 
+        this.exportFolderAction = new ExportFolderAction(this.consul, this.project.getMessageBus());
+        group.add(exportFolderAction);
+
         group.add(consulConfigurationComboBoxAction);
 
         group.addSeparator();
@@ -144,6 +152,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         this.deleteEntryAction.update(event);
         this.newEntryAction.update(event);
         this.updateEntryAction.update(event);
+        this.exportFolderAction.update(event);
     }
 
 

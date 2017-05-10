@@ -65,4 +65,8 @@ public class ConsulPanel extends JPanel {
     public void refresh() {
         initializeTreeModel();
     }
+
+    public ConsulTreeModel getTreeModel() {
+        return treeModel;
+    }
 }
