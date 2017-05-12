@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 public class UpdateEntryAction extends AbstractEntryAction {
     public UpdateEntryAction(Consul consul, MessageBus messageBus) {
-        super(consul, messageBus, "Edit entry", "Edit changes", AllIcons.Actions.Edit);
+        super(consul, messageBus, "Edit entry", "Edit changes", AllIcons.ToolbarDecorator.Edit);
     }
 
     @Override

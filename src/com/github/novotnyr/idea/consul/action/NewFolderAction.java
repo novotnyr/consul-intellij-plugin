@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 
 public class NewFolderAction extends AbstractEntryAction {
     public NewFolderAction(Consul consulClient, MessageBus messageBus) {
-        super(consulClient, messageBus, "New Folder", "Create a new folder", AllIcons.Actions.NewFolder);
+        super(consulClient, messageBus, "New Folder", "Create a new folder", AllIcons.ToolbarDecorator.AddFolder);
     }
 
     @Override

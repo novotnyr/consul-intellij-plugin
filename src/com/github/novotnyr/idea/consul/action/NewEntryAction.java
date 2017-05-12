@@ -21,7 +21,7 @@ import java.awt.GridBagLayout;
 public class NewEntryAction extends AbstractEntryAction {
 
     public NewEntryAction(Consul consul, MessageBus messageBus) {
-        super(consul, messageBus, "New entry", "Create a new entry", AllIcons.Actions.New);
+        super(consul, messageBus, "New entry", "Create a new entry", AllIcons.ToolbarDecorator.Add);
     }
 
     @Override
