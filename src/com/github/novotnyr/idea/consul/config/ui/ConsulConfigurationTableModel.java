@@ -2,7 +2,10 @@ package com.github.novotnyr.idea.consul.config.ui;
 
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +69,7 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
             case USER:
                 return consulConfiguration.getUser();
             case PASSWORD:
-                return consulConfiguration.getPassword();
+                return new Password(consulConfiguration.getPassword());
         }
         return null;
     }
@@ -92,7 +95,7 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
             case USER:
                 return String.class;
             case PASSWORD:
-                return Boolean.class;
+                return Password.class;
         }
         return super.getColumnClass(columnIndex);
     }
@@ -121,4 +124,30 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         this.configurationList.addAll(configurations);
     }
 
+    public static class Password {
+        private String password;
+
+        public Password(String password) {
+            this.password = password;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public boolean isPresent() {
+            return password != null && password.length() > 0;
+        }
+    }
+
+    public static class PasswordTableCellRenderer implements TableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Password password = (Password) value;
+            boolean hasPassword = password != null && password.isPresent();
+            return table.getDefaultRenderer(Boolean.class)
+                    .getTableCellRendererComponent(table, hasPassword, isSelected, hasFocus, row, column);
+        }
+
+    }
 }

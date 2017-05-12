@@ -38,6 +38,7 @@ public class ConsulConfigurable implements Configurable {
 
         this.configurationTable = new JBTable(this.configurationTableModel);
         this.configurationTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.configurationTable.setDefaultRenderer(ConsulConfigurationTableModel.Password.class, new ConsulConfigurationTableModel.PasswordTableCellRenderer());
 
         JPanel panelForTable =  ToolbarDecorator.createDecorator(this.configurationTable)
                 .setAddAction(this::onAddAction)
