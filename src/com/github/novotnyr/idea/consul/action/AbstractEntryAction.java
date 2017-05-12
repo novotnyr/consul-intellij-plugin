@@ -2,6 +2,7 @@ package com.github.novotnyr.idea.consul.action;
 
 import com.github.novotnyr.idea.consul.Consul;
 import com.github.novotnyr.idea.consul.Topics;
+import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -17,6 +18,8 @@ public abstract class AbstractEntryAction extends AnAction {
     protected KeyAndValue selectedKeyAndValue;
 
     private boolean enabled = false;
+
+    protected ConsulTreeModel treeModel;
 
     public AbstractEntryAction(Consul consul, MessageBus messageBus, String text, String description, Icon icon) {
         super(text, description, icon);
@@ -45,5 +48,9 @@ public abstract class AbstractEntryAction extends AnAction {
             this.selectedKeyAndValue = selectedKeyAndValue;
         }
         event.getPresentation().setEnabled(this.enabled);
+    }
+
+    public void setTreeModel(ConsulTreeModel treeModel) {
+        this.treeModel = treeModel;
     }
 }

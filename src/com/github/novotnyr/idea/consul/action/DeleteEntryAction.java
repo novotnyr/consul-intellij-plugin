@@ -1,6 +1,7 @@
 package com.github.novotnyr.idea.consul.action;
 
 import com.github.novotnyr.idea.consul.Consul;
+import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogBuilder;
@@ -19,7 +20,7 @@ public class DeleteEntryAction extends AbstractEntryAction {
     protected void onActionPerformed(String fqn, AnActionEvent event) {
         if(confirmInDialog(fqn)) {
             consul.delete(fqn);
-            refreshTree();
+            this.treeModel.remove(new KeyAndValue(fqn));
         }
     }
 

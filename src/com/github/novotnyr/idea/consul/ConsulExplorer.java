@@ -68,11 +68,18 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         this.consulPanel = new ConsulPanel(this.consul, messageBus);
         this.consulPanel.setTreeValueSelectedListener(this::onTreeValueSelected);
 
-        this.exportFolderAction.setTreeModel(this.consulPanel.getTreeModel());
+        bindTreeModel();
 
         setContent(ScrollPaneFactory.createScrollPane(this.consulPanel));
 
         configureMessageBus();
+    }
+
+    private void bindTreeModel() {
+        this.newEntryAction.setTreeModel(this.consulPanel.getTreeModel());
+        this.newFolderAction.setTreeModel(this.consulPanel.getTreeModel());
+        this.deleteEntryAction.setTreeModel(this.consulPanel.getTreeModel());
+        this.exportFolderAction.setTreeModel(this.consulPanel.getTreeModel());
     }
 
     private void configureMessageBus() {

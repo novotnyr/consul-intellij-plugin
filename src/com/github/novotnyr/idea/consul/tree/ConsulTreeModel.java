@@ -1,21 +1,23 @@
 package com.github.novotnyr.idea.consul.tree;
 
 import com.github.novotnyr.idea.consul.Consul;
-import com.intellij.util.ui.tree.AbstractTreeModel;
 
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.util.Collections;
 import java.util.List;
 
-public class ConsulTreeModel extends AbstractTreeModel implements TreeWillExpandListener, TreeSelectionListener {
+public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionListener, TreeModel {
     private JTree tree;
 
     private Consul consul;
@@ -24,19 +26,21 @@ public class ConsulTreeModel extends AbstractTreeModel implements TreeWillExpand
 
     private OnValueSelectedListener onValueSelectedListener = OnValueSelectedListener.INSTANCE;
 
-    private DefaultMutableTreeNode treeRootNode;
+    private DefaultTreeModel delegateModel;
 
     public ConsulTreeModel(JTree tree, Consul consul) {
         this.tree = tree;
         this.consul = consul;
 
         String treeRootNodeLabel = (consul != null && consul.getConfiguration() != null) ? consul.getConfiguration().getHost() : "No data";
-        this.treeRootNode = new DefaultMutableTreeNode(new RootKeyAndValue().withMessage(treeRootNodeLabel));
+        DefaultMutableTreeNode unloadedTreeRoot = new DefaultMutableTreeNode(new RootKeyAndValue().withMessage(treeRootNodeLabel));
+
+        this.delegateModel = new DefaultTreeModel(unloadedTreeRoot);
     }
 
     @Override
     public Object getRoot() {
-        ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(consul, treeRootNode);
+        ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(consul, getDelegateRoot());
         if(!loaded) {
             loader.setOnDoneListener(treeRoot -> {
                 ConsulTreeModel.this.loaded = true;
@@ -44,29 +48,31 @@ public class ConsulTreeModel extends AbstractTreeModel implements TreeWillExpand
             loader.run();
         }
 
-        return treeRootNode;
+        return getDelegateRoot();
+    }
+
+    private DefaultMutableTreeNode getDelegateRoot() {
+        return (DefaultMutableTreeNode) this.delegateModel.getRoot();
     }
 
     @Override
     public Object getChild(Object parent, int index) {
-        TreeNode parentNode = (TreeNode) parent;
-        return parentNode.getChildAt(index);
+        return this.delegateModel.getChild(parent, index);
     }
 
     @Override
     public int getChildCount(Object parent) {
-        TreeNode parentNode = (TreeNode) parent;
-        return ((TreeNode) parent).getChildCount();
+        return this.delegateModel.getChildCount(parent);
     }
 
     @Override
     public boolean isLeaf(Object nodeObject) {
-        TreeNode node = (TreeNode) nodeObject;
-        return node.isLeaf() && ! node.getAllowsChildren();
+        return this.delegateModel.isLeaf(nodeObject);
     }
 
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
+        this.delegateModel.valueForPathChanged(path, newValue);
     }
 
     @Override
@@ -101,6 +107,10 @@ public class ConsulTreeModel extends AbstractTreeModel implements TreeWillExpand
     }
 
     public DefaultMutableTreeNode getNode(KeyAndValue keyAndValue) {
+        if (keyAndValue instanceof RootKeyAndValue) {
+            return getDelegateRoot();
+        }
+
         String[] components = keyAndValue.getFullyQualifiedKey().split("/");
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) getRoot();
@@ -120,9 +130,35 @@ public class ConsulTreeModel extends AbstractTreeModel implements TreeWillExpand
         return node;
     }
 
+    public void addNode(KeyAndValue parentKeyAndValue, KeyAndValue newKeyAndValue) {
+        DefaultMutableTreeNode node = getNode(parentKeyAndValue);
+        if (node == null) {
+            throw new IllegalStateException("Unknown parent node for " + parentKeyAndValue);
+        }
+        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newKeyAndValue);
+        this.delegateModel.insertNodeInto(newNode, node, newNode.getChildCount());
+    }
+
+    public void remove(KeyAndValue value) {
+        DefaultMutableTreeNode node = getNode(value);
+        this.delegateModel.removeNodeFromParent(node);
+    }
+
+    @Override
+    public void addTreeModelListener(TreeModelListener treeModelListener) {
+        this.delegateModel.addTreeModelListener(treeModelListener);
+    }
+
+    @Override
+    public void removeTreeModelListener(TreeModelListener treeModelListener) {
+        this.delegateModel.removeTreeModelListener(treeModelListener);
+    }
+
     public interface OnValueSelectedListener {
         public static final OnValueSelectedListener INSTANCE = (kv) -> {};
 
         void onValueSelected(KeyAndValue kv);
     }
+
+
 }

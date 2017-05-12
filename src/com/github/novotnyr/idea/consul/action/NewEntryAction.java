@@ -22,8 +22,8 @@ public class NewEntryAction extends AbstractEntryAction {
     protected void onActionPerformed(String fqn, AnActionEvent event) {
         KeyAndValue keyAndValueFromDialog = getKeyAndValueFromDialog(fqn);
         if (keyAndValueFromDialog != null) {
+            this.treeModel.addNode(this.selectedKeyAndValue, keyAndValueFromDialog);
             consul.insert(keyAndValueFromDialog.getFullyQualifiedKey(), keyAndValueFromDialog.getValue());
-            refreshTree();
         }
     }
 
