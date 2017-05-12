@@ -33,7 +33,7 @@ public class ConsulPanel extends JPanel {
         this.tree = new Tree();
         initializeTreeModel();
 
-        this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus);
+        this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, treeModel);
 
 
         JBSplitter splitter = new JBSplitter(true, 0.8f, 0.1f, 0.9f);
@@ -53,9 +53,8 @@ public class ConsulPanel extends JPanel {
     }
 
     private void treeValueSelected(KeyAndValue kv) {
-        this.keyAndValuePanel.setKey(kv.getFullyQualifiedKey());
-        this.keyAndValuePanel.setValue(kv.getValue());
-        treeValueSelectedListener.onValueSelected(kv);
+        this.keyAndValuePanel.setKeyAndValue(kv);
+        this.treeValueSelectedListener.onValueSelected(kv);
     }
 
     public void setTreeValueSelectedListener(ConsulTreeModel.OnValueSelectedListener treeValueSelectedListener) {

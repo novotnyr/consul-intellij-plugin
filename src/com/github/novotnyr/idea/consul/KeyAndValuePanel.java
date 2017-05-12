@@ -1,5 +1,8 @@
 package com.github.novotnyr.idea.consul;
 
+import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
+import com.github.novotnyr.idea.consul.tree.KeyAndValue;
+import com.github.novotnyr.idea.consul.ui.FolderContentsTablePanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.messages.MessageBus;
 import org.jetbrains.annotations.NotNull;
@@ -8,11 +11,13 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
@@ -25,8 +30,19 @@ public class KeyAndValuePanel extends JPanel {
 
     private JButton updateButton = new JButton("Update");
 
-    public KeyAndValuePanel(@NotNull MessageBus messageBus) {
+    private KeyAndValue keyAndValue;
+
+    private FolderContentsTablePanel folderContentsTablePanel;
+
+    private ConsulTreeModel consulTree;
+
+    private final JPanel middlePanel;
+
+    private Mode viewMode;
+
+    public KeyAndValuePanel(@NotNull MessageBus messageBus, @NotNull ConsulTreeModel consulTree) {
         super();
+        this.consulTree = consulTree;
         setLayout(new BorderLayout());
 
         this.messageBus = messageBus;
@@ -43,11 +59,23 @@ public class KeyAndValuePanel extends JPanel {
 
         add(headerPanel, BorderLayout.PAGE_START);
 
+        this.middlePanel = new JPanel(new CardLayout());
+        this.middlePanel.add(getValuePane(), Mode.ENTRY.name());
+        this.middlePanel.add(getFolderContentPane(), Mode.FOLDER.name());
 
-        this.valueTextArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        add(new JBScrollPane(this.valueTextArea, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+        add(this.middlePanel, BorderLayout.CENTER);
 
         setMinimumSize(new Dimension(20, 200));
+    }
+
+    private JBScrollPane getValuePane() {
+        this.valueTextArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return new JBScrollPane(this.valueTextArea, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    }
+
+    private JComponent getFolderContentPane() {
+        this.folderContentsTablePanel = new FolderContentsTablePanel(consulTree, this.keyAndValue);
+        return this.folderContentsTablePanel;
     }
 
     private void onUpdateButtonClick(ActionEvent event) {
@@ -56,11 +84,24 @@ public class KeyAndValuePanel extends JPanel {
                 .keyValueChanged(this.fqnKeyLabel.getText(), this.valueTextArea.getText());
     }
 
-    public void setKey(String key) {
-        this.fqnKeyLabel.setText(key);
+    public void setKeyAndValue(KeyAndValue keyAndValue) {
+        this.keyAndValue = keyAndValue;
+        this.fqnKeyLabel.setText(keyAndValue.getFullyQualifiedKey());
+
+        CardLayout cardLayout = (CardLayout) this.middlePanel.getLayout();
+        if(keyAndValue.isContainer()) {
+            this.folderContentsTablePanel.refresh(this.consulTree, this.keyAndValue);
+            cardLayout.show(this.middlePanel, Mode.FOLDER.name());
+            this.updateButton.setVisible(false);
+        } else {
+            this.valueTextArea.setText(keyAndValue.getValue());
+            cardLayout.show(this.middlePanel, Mode.ENTRY.name());
+            this.updateButton.setVisible(true);
+        }
     }
 
-    public void setValue(String value) {
-        this.valueTextArea.setText(value);
+    public enum Mode {
+        FOLDER,
+        ENTRY;
     }
 }
