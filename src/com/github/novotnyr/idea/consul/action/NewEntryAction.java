@@ -29,6 +29,7 @@ public class NewEntryAction extends AbstractEntryAction {
         DialogBuilder builder = new DialogBuilder()
                 .title("Create a new entry")
                 .centerPanel(keyAndValuePanel);
+        builder.setPreferredFocusComponent(keyAndValuePanel.getKeyTextField());
         if(builder.showAndGet()) {
             return keyAndValuePanel.getKeyAndValue();
         }

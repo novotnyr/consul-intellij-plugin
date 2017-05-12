@@ -75,8 +75,6 @@ public class KeyAndValueEditorPanel extends JPanel {
         setPreferredSize(new Dimension(300, 200));
 
         bindFromModel();
-
-        this.keyTextField.requestFocusInWindow();
     }
 
     private void bindFromModel() {
@@ -92,5 +90,9 @@ public class KeyAndValueEditorPanel extends JPanel {
     public KeyAndValue getKeyAndValue() {
         return new KeyAndValue(this.parentFullyQualifiedName
                 + this.keyTextField.getText(), this.valueTextArea.getText());
+    }
+
+    public JTextField getKeyTextField() {
+        return keyTextField;
     }
 }

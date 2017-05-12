@@ -33,6 +33,7 @@ public class UpdateEntryAction extends AbstractEntryAction {
         DialogBuilder builder = new DialogBuilder()
                 .title("Update an entry")
                 .centerPanel(keyAndValuePanel);
+        builder.setPreferredFocusComponent(keyAndValuePanel.getKeyTextField());
         if(builder.showAndGet()) {
             return keyAndValuePanel.getKeyAndValue();
         }
