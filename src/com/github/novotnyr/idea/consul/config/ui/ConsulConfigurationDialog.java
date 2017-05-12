@@ -34,7 +34,21 @@ public class ConsulConfigurationDialog extends DialogWrapper {
         if(this.consulHostPanel.getPortTextField().getText().isEmpty()) {
             return new ValidationInfo("Port cannot be empty", this.consulHostPanel.getPortTextField());
         }
+        if(! isInteger(this.consulHostPanel.getPortTextField())) {
+            return new ValidationInfo("Port must be a numeric value", this.consulHostPanel.getPortTextField());
+        }
+
         return null;
+    }
+
+    private boolean isInteger(JTextField field) {
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            Integer.parseInt(field.getText());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public ConsulConfiguration getConsulConfiguration() {
