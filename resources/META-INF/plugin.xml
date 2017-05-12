@@ -23,7 +23,7 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <toolWindow id="Consul" anchor="right" icon="/icons/plus.png" factoryClass="com.github.novotnyr.idea.consul.ToolWindowFactory"/>
+    <toolWindow id="Consul" anchor="right" factoryClass="com.github.novotnyr.idea.consul.ToolWindowFactory"/>
     <applicationConfigurable instance="com.github.novotnyr.idea.consul.config.ui.ConsulConfigurable" />
     <applicationService
             serviceImplementation="com.github.novotnyr.idea.consul.config.ConsulConfigurationPersistentService"/>
