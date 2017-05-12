@@ -26,6 +26,10 @@ public class NewFolderAction extends AbstractEntryAction {
             consul.mkdir(fullyQualifiedPath);
             this.treeModel.addNode(this.selectedKeyAndValue, new KeyAndValue(fullyQualifiedPath));
         }
+    }
 
+    @Override
+    protected boolean isEnabledForKeyAndValue(KeyAndValue keyAndValue) {
+        return keyAndValue.isContainer();
     }
 }

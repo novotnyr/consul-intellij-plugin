@@ -44,10 +44,14 @@ public abstract class AbstractEntryAction extends AnAction {
     public void update(AnActionEvent event) {
         if ("ConsulExplorer".equals(event.getPlace())) {
             KeyAndValue selectedKeyAndValue = (KeyAndValue) event.getDataContext().getData("selectedKeyAndValue");
-            this.enabled = selectedKeyAndValue != null;
+            this.enabled = selectedKeyAndValue != null && isEnabledForKeyAndValue(selectedKeyAndValue);;
             this.selectedKeyAndValue = selectedKeyAndValue;
         }
         event.getPresentation().setEnabled(this.enabled);
+    }
+
+    protected boolean isEnabledForKeyAndValue(KeyAndValue keyAndValue) {
+        return true;
     }
 
     public void setTreeModel(ConsulTreeModel treeModel) {
