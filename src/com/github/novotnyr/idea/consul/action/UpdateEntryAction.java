@@ -39,4 +39,9 @@ public class UpdateEntryAction extends AbstractEntryAction {
         }
         return null;
     }
+
+    @Override
+    protected boolean isEnabledForKeyAndValue(KeyAndValue keyAndValue) {
+        return ! keyAndValue.isContainer();
+    }
 }

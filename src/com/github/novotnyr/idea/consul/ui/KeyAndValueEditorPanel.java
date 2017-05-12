@@ -26,6 +26,7 @@ public class KeyAndValueEditorPanel extends JPanel {
 
     public KeyAndValueEditorPanel(String parentFullyQualifiedName) {
         this(null, parentFullyQualifiedName);
+        this.keyTextField.setEnabled(true);
     }
 
     public KeyAndValueEditorPanel(KeyAndValue keyAndValue, String parentFullyQualifiedName) {
@@ -60,6 +61,7 @@ public class KeyAndValueEditorPanel extends JPanel {
         add(new JLabel("Key:"), cColumn1);
 
         add(this.keyTextField = new JTextField(), cColumns2);
+        this.keyTextField.setEnabled(false);
 
         // row 3
         cColumn1.gridy = cColumns2.gridy = 2;
