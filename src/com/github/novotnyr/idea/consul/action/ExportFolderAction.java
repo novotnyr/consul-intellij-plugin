@@ -3,6 +3,7 @@ package com.github.novotnyr.idea.consul.action;
 import com.github.novotnyr.idea.consul.Consul;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
+import com.github.novotnyr.idea.consul.tree.TreeUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -18,8 +19,6 @@ import com.intellij.util.messages.MessageBus;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
 
 public class ExportFolderAction extends AbstractEntryAction {
     private ConsulTreeModel treeModel;
@@ -55,8 +54,7 @@ public class ExportFolderAction extends AbstractEntryAction {
 
     private byte[] export(DefaultMutableTreeNode node) {
         StringBuilder export = new StringBuilder();
-        List<DefaultMutableTreeNode> children = Collections.list(node.children());
-        for (DefaultMutableTreeNode child : children) {
+        for (DefaultMutableTreeNode child : TreeUtils.iterableChildren(node)) {
             KeyAndValue keyAndValue = (KeyAndValue) child.getUserObject();
             export.append(keyAndValue.getKey()).append("=").append(keyAndValue.getValue()).append("\n");
         }

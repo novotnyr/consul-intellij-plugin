@@ -112,7 +112,7 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
 
     @SuppressWarnings("unchecked")
     private DefaultMutableTreeNode getNodeByValue(TreeNode node, KeyAndValue kv) {
-        for(Object childObject : Collections.list(node.children())) {
+        for (Object childObject : TreeUtils.iterableChildren(node)) {
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) childObject;
             if (child.getUserObject().equals(kv)) {
                 return child;

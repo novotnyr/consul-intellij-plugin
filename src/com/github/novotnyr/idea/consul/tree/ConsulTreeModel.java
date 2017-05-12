@@ -14,8 +14,6 @@ import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.util.Collections;
-import java.util.List;
 
 public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionListener, TreeModel {
     private JTree tree;
@@ -115,8 +113,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) getRoot();
         for (int i = 0; i < components.length; i++) {
-            List<DefaultMutableTreeNode> children = Collections.list(node.children());
-            for (DefaultMutableTreeNode child : children) {
+            for (DefaultMutableTreeNode child : TreeUtils.iterableChildren(node)) {
                 KeyAndValue childKV = (KeyAndValue) child.getUserObject();
                 if (childKV.getKey().equals(components[i])) {
                     node = child;
