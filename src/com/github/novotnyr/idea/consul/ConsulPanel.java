@@ -9,6 +9,7 @@ import com.intellij.util.messages.MessageBus;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.JPanel;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.BorderLayout;
 
 public class ConsulPanel extends JPanel {
@@ -50,6 +51,7 @@ public class ConsulPanel extends JPanel {
         tree.setModel(treeModel);
         tree.addTreeWillExpandListener(this.treeModel);
         tree.addTreeSelectionListener(this.treeModel);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
     private void treeValueSelected(KeyAndValue kv) {
