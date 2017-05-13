@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.novotnyr.consul-intellij-plugin</id>
   <name>Consul K/V Support</name>
-  <version>0.1</version>
+  <version>0.2</version>
   <vendor url="https://github.com/novotnyr/consul-intellij-plugin">Robert Novotny</vendor>
 
   <description><![CDATA[
@@ -9,7 +9,19 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      <em>0.1</em> Initial release
+      <p>
+      <em>0.2</em>
+      <ul>
+        <li>Many improvements on tree behaviour and item display</li>
+        <li>Allow to export folder into a file.
+      </ul>
+      </p>
+      <p>
+      <em>0.1</em>
+      <ul>
+        <li>Initial Release</li>
+      </ul>
+      </p>
     ]]>
   </change-notes>
 
