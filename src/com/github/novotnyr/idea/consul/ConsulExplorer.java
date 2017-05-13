@@ -80,6 +80,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         this.newFolderAction.setTreeModel(this.consulPanel.getTreeModel());
         this.deleteEntryAction.setTreeModel(this.consulPanel.getTreeModel());
         this.exportFolderAction.setTreeModel(this.consulPanel.getTreeModel());
+        this.updateEntryAction.setTreeModel(this.consulPanel.getTreeModel());
     }
 
     private void configureMessageBus() {
@@ -99,8 +100,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         });
         this.busConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED, new Topics.KeyValueChanged() {
             @Override
-            public void keyValueChanged(String key, String newValue) {
-                updateEntryAction.update(key, newValue);
+            public void keyValueChanged(KeyAndValue keyAndValue) {
+                updateEntryAction.update(keyAndValue);
             }
         });
     }
@@ -120,7 +121,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         group.add(deleteEntryAction);
 
         this.updateEntryAction = new UpdateEntryAction(this.consul, this.project.getMessageBus());
-        group.add(updateEntryAction);
 
         this.exportFolderAction = new ExportFolderAction(this.consul, this.project.getMessageBus());
         group.add(exportFolderAction);

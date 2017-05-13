@@ -1,6 +1,7 @@
 package com.github.novotnyr.idea.consul;
 
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
+import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.intellij.util.messages.Topic;
 
 public class Topics {
@@ -20,6 +21,6 @@ public class Topics {
     public interface KeyValueChanged {
         Topic<KeyValueChanged> KEY_VALUE_CHANGED = Topic.create("Value changed", KeyValueChanged.class);
 
-        void keyValueChanged(String key, String newValue);
+        void keyValueChanged(KeyAndValue changedKeyAndValue);
     }
 }

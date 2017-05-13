@@ -17,18 +17,21 @@ public class UpdateEntryAction extends AbstractEntryAction {
     protected void onActionPerformed(String fqn, AnActionEvent event) {
         KeyAndValue keyAndValueFromDialog = getKeyAndValueFromDialog(fqn);
         if (keyAndValueFromDialog != null) {
-            update(keyAndValueFromDialog.getFullyQualifiedKey(), keyAndValueFromDialog.getValue());
+            update(keyAndValueFromDialog);
         }
     }
 
-    public void update(String fqnKey, String value) {
+    public void update(KeyAndValue updatedKeyAndValue) {
+        String fqnKey = updatedKeyAndValue.getFullyQualifiedKey();
+        String value = updatedKeyAndValue.getValue();
+
         consul.update(fqnKey, value);
-        refreshTree();
+        this.treeModel.updateNode(updatedKeyAndValue);
     }
 
 
     private KeyAndValue getKeyAndValueFromDialog(String fqn) {
-        KeyAndValueEditorPanel keyAndValuePanel = new KeyAndValueEditorPanel(this.selectedKeyAndValue, fqn);
+        KeyAndValueEditorPanel keyAndValuePanel = new KeyAndValueEditorPanel(this.selectedKeyAndValue);
 
         DialogBuilder builder = new DialogBuilder()
                 .title("Update an entry")
@@ -44,4 +47,5 @@ public class UpdateEntryAction extends AbstractEntryAction {
     protected boolean isEnabledForKeyAndValue(KeyAndValue keyAndValue) {
         return ! keyAndValue.isContainer();
     }
+
 }

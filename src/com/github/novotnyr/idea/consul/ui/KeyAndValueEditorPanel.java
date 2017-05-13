@@ -25,15 +25,21 @@ public class KeyAndValueEditorPanel extends JPanel {
     private JTextField keyTextField;
 
     public KeyAndValueEditorPanel(String parentFullyQualifiedName) {
-        this(null, parentFullyQualifiedName);
+        this.parentFullyQualifiedName = parentFullyQualifiedName;
+        initComponents();
+        this.parentFqnLabel.setText(parentFullyQualifiedName);
         this.keyTextField.setEnabled(true);
     }
 
-    public KeyAndValueEditorPanel(KeyAndValue keyAndValue, String parentFullyQualifiedName) {
-        setLayout(new GridBagLayout());
-
+    public KeyAndValueEditorPanel(KeyAndValue keyAndValue) {
+        initComponents();
         this.keyAndValue = keyAndValue;
-        this.parentFullyQualifiedName = parentFullyQualifiedName;
+        this.parentFullyQualifiedName = keyAndValue.getParentFullyQualifiedKey();
+        bindFromModel();
+    }
+
+    private void initComponents() {
+        setLayout(new GridBagLayout());
 
         GridBagConstraints cColumn1 = new GridBagConstraints();
         cColumn1.fill = GridBagConstraints.NONE;
@@ -75,8 +81,6 @@ public class KeyAndValueEditorPanel extends JPanel {
         add(valueScrollPane, cColumns2);
 
         setPreferredSize(new Dimension(300, 200));
-
-        bindFromModel();
     }
 
     private void bindFromModel() {

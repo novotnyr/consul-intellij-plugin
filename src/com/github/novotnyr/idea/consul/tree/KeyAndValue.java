@@ -1,5 +1,7 @@
 package com.github.novotnyr.idea.consul.tree;
 
+import java.util.Arrays;
+
 public class KeyAndValue {
     private String fullyQualifiedKey;
 
@@ -23,6 +25,16 @@ public class KeyAndValue {
 
     public String getFullyQualifiedKey() {
         return fullyQualifiedKey;
+    }
+
+    public String getParentFullyQualifiedKey() {
+        String[] split = this.fullyQualifiedKey.split("/");
+        String[] parentComponents = Arrays.copyOf(split, split.length - 1);
+        String fqn = String.join("/", parentComponents);
+        if(fqn.isEmpty()) {
+            return fqn;
+        }
+        return fqn + "/";
     }
 
     public String getKey() {

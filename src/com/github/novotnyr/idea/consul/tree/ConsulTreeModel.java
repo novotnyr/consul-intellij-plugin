@@ -141,6 +141,16 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         this.delegateModel.removeNodeFromParent(node);
     }
 
+    public void updateNode(KeyAndValue keyAndValue) {
+        DefaultMutableTreeNode node = getNode(keyAndValue);
+        node.setUserObject(keyAndValue);
+        if (node == null) {
+            throw new IllegalStateException("Unknown node for " + keyAndValue);
+        }
+        this.delegateModel.reload(node);
+    }
+
+
     @Override
     public void addTreeModelListener(TreeModelListener treeModelListener) {
         this.delegateModel.addTreeModelListener(treeModelListener);

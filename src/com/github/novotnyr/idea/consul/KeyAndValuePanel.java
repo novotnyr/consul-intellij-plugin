@@ -81,7 +81,7 @@ public class KeyAndValuePanel extends JPanel {
     private void onUpdateButtonClick(ActionEvent event) {
         this.messageBus
                 .syncPublisher(Topics.KeyValueChanged.KEY_VALUE_CHANGED)
-                .keyValueChanged(this.fqnKeyLabel.getText(), this.valueTextArea.getText());
+                .keyValueChanged(new KeyAndValue(this.fqnKeyLabel.getText(), this.valueTextArea.getText()));
     }
 
     public void setKeyAndValue(KeyAndValue keyAndValue) {
