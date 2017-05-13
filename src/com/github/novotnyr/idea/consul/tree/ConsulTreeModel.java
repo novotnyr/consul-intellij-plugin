@@ -161,6 +161,10 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         this.delegateModel.removeTreeModelListener(treeModelListener);
     }
 
+    public Consul getConsul() {
+        return consul;
+    }
+
     public interface OnValueSelectedListener {
         public static final OnValueSelectedListener INSTANCE = (kv) -> {};
 

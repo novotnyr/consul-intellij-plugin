@@ -13,7 +13,11 @@ import javax.swing.JLabel;
 public class DeleteEntryAction extends AbstractEntryAction {
 
     public DeleteEntryAction(Consul consul, MessageBus messageBus) {
-        super(consul, messageBus, "Delete", "Delete an entry", AllIcons.Actions.Delete);
+        this(consul, messageBus, false);
+    }
+
+    public DeleteEntryAction(Consul consul, MessageBus messageBus, boolean enabled) {
+        super(consul, messageBus, "Delete", "Delete an entry", AllIcons.Actions.Delete, enabled);
     }
 
     @Override

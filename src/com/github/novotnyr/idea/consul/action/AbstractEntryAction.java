@@ -22,9 +22,13 @@ public abstract class AbstractEntryAction extends AnAction {
     protected ConsulTreeModel treeModel;
 
     public AbstractEntryAction(Consul consul, MessageBus messageBus, String text, String description, Icon icon) {
+        this(consul, messageBus, text, description, icon, false);
+    }
+    public AbstractEntryAction(Consul consul, MessageBus messageBus, String text, String description, Icon icon, boolean enabled) {
         super(text, description, icon);
         this.consul = consul;
         this.messageBus = messageBus;
+        this.enabled = true;
     }
 
     @Override
