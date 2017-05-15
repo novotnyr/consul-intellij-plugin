@@ -89,6 +89,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
             public void refreshTree() {
                 consul.setConfiguration(consulConfigurationComboBoxAction.getSelection());
                 consulPanel.refresh();
+                bindTreeModel();
             }
         });
         this.busConnection.subscribe(Topics.ConsulConfigurationChanged.CONSUL_CONFIGURATION_CHANGED_TOPIC, new Topics.ConsulConfigurationChanged() {
@@ -96,6 +97,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
             public void consulConfigurationChanged(ConsulConfiguration newConfiguration) {
                 consul.setConfiguration(newConfiguration);
                 consulPanel.refresh();
+                bindTreeModel();
             }
         });
         this.busConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED, new Topics.KeyValueChanged() {
