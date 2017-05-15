@@ -5,7 +5,6 @@ import com.github.novotnyr.idea.consul.Consul;
 import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.SwingWorker;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
-public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
+public class ConsulTreeLoadingWorker extends SwingWorker<KVNode, Void> {
     private static final Logger LOG = Logger.getInstance(ConsulTreeLoadingWorker.class);
 
     private Consul consul;
@@ -25,17 +24,12 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
 
     private OnDoneListener onDoneListener = cache -> { /* no-op */};
 
-    // shared between threads!
-    // created on EDT, modified on background
-    private DefaultMutableTreeNode treeRootNode;
-
-    public ConsulTreeLoadingWorker(Consul consul, DefaultMutableTreeNode treeRootNode) {
+    public ConsulTreeLoadingWorker(Consul consul) {
         this.consul = consul;
-        this.treeRootNode = treeRootNode;
     }
 
     @Override
-    protected TreeNode doInBackground() throws Exception {
+    protected KVNode doInBackground() throws Exception {
         LOG.debug("Loading Consul data in background for " + this.consul.getConfiguration().toSimpleString());
 
         List<GetValue> kvValues = consul.getAllValues();
@@ -43,7 +37,7 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
                 .orElse(Collections.emptyList())
                 .stream()
                 .collect(Collectors.toMap(GetValue::getKey, ConsulTreeLoadingWorker::getValue, throwingMerger(), TreeMap::new));
-        return load(map, treeRootNode);
+        return load(map);
     }
 
     private static <T> BinaryOperator<T> throwingMerger() {
@@ -60,19 +54,21 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
     @Override
     protected void done() {
         try {
-            TreeNode node = get();
+            KVNode node = get();
             this.onDoneListener.onDone(node);
         } catch (InterruptedException | ExecutionException e) {
-            ((RootKeyAndValue) treeRootNode.getUserObject()).setMessage("No data!");
-            this.onDoneListener.onDone(treeRootNode);
+            KVNode errorNode = new KVNode(new RootKeyAndValue().withMessage("No data!"));
+            this.onDoneListener.onDone(errorNode);
         }
     }
 
-    public DefaultMutableTreeNode load(Map<String, String> map, DefaultMutableTreeNode root) {
+    public KVNode load(Map<String, String> map) {
+        KVNode root = new KVNode(new RootKeyAndValue());
+
         map.forEach((key, value) -> {
             String[] components = key.split("/", -1);
 
-            DefaultMutableTreeNode n = root;
+            KVNode n = root;
             StringBuilder fullPath = new StringBuilder();
             for (int i = 0; i < components.length; i++) {
                 String component = components[i];
@@ -87,9 +83,9 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
                     kv = new KeyAndValue(fullPath.toString(), value);
                 }
 
-                DefaultMutableTreeNode child = getNodeByValue(n, kv);
+                KVNode child = getNodeByValue(n, kv);
                 if (child == null) {
-                    DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(kv);
+                    KVNode newChild = new KVNode(kv);
                     n.insert(newChild, n.getChildCount());
                     n = newChild;
                 } else {
@@ -111,9 +107,9 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
     }
 
     @SuppressWarnings("unchecked")
-    private DefaultMutableTreeNode getNodeByValue(TreeNode node, KeyAndValue kv) {
+    private KVNode getNodeByValue(TreeNode node, KeyAndValue kv) {
         for (Object childObject : TreeUtils.iterableChildren(node)) {
-            DefaultMutableTreeNode child = (DefaultMutableTreeNode) childObject;
+            KVNode child = (KVNode) childObject;
             if (child.getUserObject().equals(kv)) {
                 return child;
             }
@@ -126,7 +122,7 @@ public class ConsulTreeLoadingWorker extends SwingWorker<TreeNode, Void> {
     }
 
     public interface OnDoneListener {
-        void onDone(TreeNode treeNode);
+        void onDone(KVNode treeNode);
     }
 
 }

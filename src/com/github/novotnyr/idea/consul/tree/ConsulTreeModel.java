@@ -30,18 +30,29 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         this.tree = tree;
         this.consul = consul;
 
-        String treeRootNodeLabel = (consul != null && consul.getConfiguration() != null) ? consul.getConfiguration().getHost() : "No data";
+        String treeRootNodeLabel = getTreeRootNodeLabel();
         DefaultMutableTreeNode unloadedTreeRoot = new DefaultMutableTreeNode(new RootKeyAndValue().withMessage(treeRootNodeLabel));
 
         this.delegateModel = new DefaultTreeModel(unloadedTreeRoot);
     }
 
+    private String getTreeRootNodeLabel() {
+        return (this.consul != null && this.consul.getConfiguration() != null) ? this.consul.getConfiguration().getHost() : "No data";
+    }
+
     @Override
     public Object getRoot() {
-        ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(consul, getDelegateRoot());
-        if(!loaded) {
+        ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
+        if(!this.loaded) {
             loader.setOnDoneListener(treeRoot -> {
                 ConsulTreeModel.this.loaded = true;
+                DefaultTreeModel delegate = ConsulTreeModel.this.delegateModel;
+
+                String treeRootNodeLabel = getTreeRootNodeLabel();
+
+                treeRoot.setKeyAndValue(new RootKeyAndValue().withMessage(treeRootNodeLabel));
+
+                delegate.setRoot(treeRoot);
             });
             loader.run();
         }
