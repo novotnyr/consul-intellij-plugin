@@ -2,6 +2,7 @@ package com.github.novotnyr.idea.consul.action;
 
 import com.github.novotnyr.idea.consul.Consul;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
+import com.github.novotnyr.idea.consul.tree.KVNode;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.github.novotnyr.idea.consul.tree.TreeUtils;
 import com.intellij.icons.AllIcons;
@@ -17,7 +18,6 @@ import com.intellij.util.Consumer;
 import com.intellij.util.ThrowableRunnable;
 import com.intellij.util.messages.MessageBus;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.nio.charset.Charset;
 
 public class ExportFolderAction extends AbstractEntryAction {
@@ -29,7 +29,7 @@ public class ExportFolderAction extends AbstractEntryAction {
 
     @Override
     protected void onActionPerformed(String fqn, AnActionEvent event) {
-        DefaultMutableTreeNode node = this.treeModel.getNode(this.selectedKeyAndValue);
+        KVNode node = this.treeModel.getNode(this.selectedKeyAndValue);
 
         FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
         FileChooser.chooseFile(descriptor, getProject(event), null, new Consumer<VirtualFile>() {
@@ -52,10 +52,10 @@ public class ExportFolderAction extends AbstractEntryAction {
         });
     }
 
-    private byte[] export(DefaultMutableTreeNode node) {
+    private byte[] export(KVNode node) {
         StringBuilder export = new StringBuilder();
-        for (DefaultMutableTreeNode child : TreeUtils.iterableChildren(node)) {
-            KeyAndValue keyAndValue = (KeyAndValue) child.getUserObject();
+        for (KVNode child : TreeUtils.iterableChildren(node)) {
+            KeyAndValue keyAndValue = child.getKeyAndValue();
             export.append(keyAndValue.getKey()).append("=").append(keyAndValue.getValue()).append("\n");
         }
         return export.toString().getBytes(Charset.defaultCharset());

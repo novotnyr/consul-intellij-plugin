@@ -8,7 +8,6 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeModel;
@@ -31,7 +30,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         this.consul = consul;
 
         String treeRootNodeLabel = getTreeRootNodeLabel();
-        DefaultMutableTreeNode unloadedTreeRoot = new DefaultMutableTreeNode(new RootKeyAndValue().withMessage(treeRootNodeLabel));
+        KVNode unloadedTreeRoot = new KVNode(new RootKeyAndValue().withMessage(treeRootNodeLabel));
 
         this.delegateModel = new DefaultTreeModel(unloadedTreeRoot);
     }
@@ -60,8 +59,8 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         return getDelegateRoot();
     }
 
-    private DefaultMutableTreeNode getDelegateRoot() {
-        return (DefaultMutableTreeNode) this.delegateModel.getRoot();
+    private KVNode getDelegateRoot() {
+        return (KVNode) this.delegateModel.getRoot();
     }
 
     @Override
@@ -106,8 +105,8 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         if(newPath == null) {
             return;
         }
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) newPath.getLastPathComponent();
-        this.onValueSelectedListener.onValueSelected((KeyAndValue) node.getUserObject());
+        KVNode node = (KVNode) newPath.getLastPathComponent();
+        this.onValueSelectedListener.onValueSelected(node.getKeyAndValue());
     }
 
 
@@ -115,18 +114,18 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         this.onValueSelectedListener = onValueSelectedListener;
     }
 
-    public DefaultMutableTreeNode getNode(KeyAndValue keyAndValue) {
+    public KVNode getNode(KeyAndValue keyAndValue) {
         if (keyAndValue instanceof RootKeyAndValue) {
             return getDelegateRoot();
         }
 
         String[] components = keyAndValue.getFullyQualifiedKey().split("/");
 
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) getRoot();
-        for (int i = 0; i < components.length; i++) {
-            for (DefaultMutableTreeNode child : TreeUtils.iterableChildren(node)) {
-                KeyAndValue childKV = (KeyAndValue) child.getUserObject();
-                if (childKV.getKey().equals(components[i])) {
+        KVNode node = (KVNode) getRoot();
+        for (String component : components) {
+            for (KVNode child : TreeUtils.iterableChildren(node)) {
+                KeyAndValue childKV = child.getKeyAndValue();
+                if (childKV.getKey().equals(component)) {
                     node = child;
                     break;
                 }
@@ -139,25 +138,22 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
     }
 
     public void addNode(KeyAndValue parentKeyAndValue, KeyAndValue newKeyAndValue) {
-        DefaultMutableTreeNode node = getNode(parentKeyAndValue);
+        KVNode node = getNode(parentKeyAndValue);
         if (node == null) {
             throw new IllegalStateException("Unknown parent node for " + parentKeyAndValue);
         }
-        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newKeyAndValue);
+        KVNode newNode = new KVNode(newKeyAndValue);
         this.delegateModel.insertNodeInto(newNode, node, newNode.getChildCount());
     }
 
     public void remove(KeyAndValue value) {
-        DefaultMutableTreeNode node = getNode(value);
+        KVNode node = getNode(value);
         this.delegateModel.removeNodeFromParent(node);
     }
 
     public void updateNode(KeyAndValue keyAndValue) {
-        DefaultMutableTreeNode node = getNode(keyAndValue);
-        node.setUserObject(keyAndValue);
-        if (node == null) {
-            throw new IllegalStateException("Unknown node for " + keyAndValue);
-        }
+        KVNode node = getNode(keyAndValue);
+        node.setKeyAndValue(keyAndValue);
         this.delegateModel.reload(node);
     }
 
@@ -177,7 +173,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
     }
 
     public interface OnValueSelectedListener {
-        public static final OnValueSelectedListener INSTANCE = (kv) -> {};
+        OnValueSelectedListener INSTANCE = (kv) -> {};
 
         void onValueSelected(KeyAndValue kv);
     }

@@ -1,6 +1,7 @@
 package com.github.novotnyr.idea.consul.ui;
 
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
+import com.github.novotnyr.idea.consul.tree.KVNode;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.github.novotnyr.idea.consul.tree.TreeUtils;
 import com.intellij.ui.components.JBScrollPane;
@@ -8,7 +9,6 @@ import com.intellij.ui.table.JBTable;
 
 import javax.swing.JPanel;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,12 +102,12 @@ public class FolderContentsTablePanel extends JPanel {
             if (this.consulTree == null || this.keyAndValue == null) {
                 return keyAndValues;
             }
-            DefaultMutableTreeNode node = this.consulTree.getNode(this.keyAndValue);
+            KVNode node = this.consulTree.getNode(this.keyAndValue);
             if (node == null) {
                 return keyAndValues;
             }
-            for (DefaultMutableTreeNode defaultMutableTreeNode : TreeUtils.iterableChildren(node)) {
-                KeyAndValue kv = (KeyAndValue) defaultMutableTreeNode.getUserObject();
+            for (KVNode child : TreeUtils.iterableChildren(node)) {
+                KeyAndValue kv = child.getKeyAndValue();
                 if(! kv.isContainer()) {
                     keyAndValues.add(kv);
                 }
