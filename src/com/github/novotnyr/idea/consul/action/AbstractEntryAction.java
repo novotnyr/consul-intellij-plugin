@@ -61,4 +61,8 @@ public abstract class AbstractEntryAction extends AnAction {
     public void setTreeModel(ConsulTreeModel treeModel) {
         this.treeModel = treeModel;
     }
+
+    public void setSelectedKeyAndValue(KeyAndValue selectedKeyAndValue) {
+        this.selectedKeyAndValue = selectedKeyAndValue;
+    }
 }

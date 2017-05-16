@@ -40,4 +40,5 @@ public class NewEntryAction extends AbstractEntryAction {
     protected boolean isEnabledForKeyAndValue(KeyAndValue keyAndValue) {
         return keyAndValue.isContainer();
     }
+
 }
