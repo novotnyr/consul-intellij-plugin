@@ -6,6 +6,7 @@ import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.messages.MessageBus;
+import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.JPanel;
@@ -52,6 +53,8 @@ public class ConsulPanel extends JPanel {
         tree.addTreeWillExpandListener(this.treeModel);
         tree.addTreeSelectionListener(this.treeModel);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+        TreeUtil.installActions(tree);
     }
 
     private void treeValueSelected(KeyAndValue kv) {
