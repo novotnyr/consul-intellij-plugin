@@ -9,26 +9,36 @@ import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
 import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
 import com.github.novotnyr.idea.consul.action.UpdateEntryAction;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
+import com.github.novotnyr.idea.consul.tree.ConsulTree;
+import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
+import com.github.novotnyr.idea.consul.tree.KVNode;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataProvider;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.impl.SimpleDataContext;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.ui.JBSplitter;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.tree.TreeUtil;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.Component;
 
-public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable {
-
-    private ConsulPanel consulPanel;
+public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable, DataProvider {
 
     private Consul consul;
 
@@ -50,6 +60,14 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
 
     private ExportFolderAction exportFolderAction;
 
+    private ConsulTree tree;
+
+    private ConsulTreeModel treeModel;
+
+    private KeyAndValuePanel keyAndValuePanel;
+
+    private KeyAndValue selectedKeyAndValue;
+
     public ConsulExplorer(Project project) {
         super(true);
 
@@ -65,22 +83,32 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
 
         setToolbar(createToolbarPanel());
 
-        this.consulPanel = new ConsulPanel(this.consul, messageBus);
-        this.consulPanel.setTreeValueSelectedListener(this::onTreeValueSelected);
-
         bindTreeModel();
-
-        setContent(ScrollPaneFactory.createScrollPane(this.consulPanel));
-
         configureMessageBus();
+
+        this.tree = new ConsulTree();
+        initializeTreeModel();
+        TreeUtil.installActions(tree);
+        installPopupHandler(tree);
+
+        this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, treeModel);
+
+
+        JBSplitter splitter = new JBSplitter(true, 0.8f, 0.1f, 0.9f);
+        splitter.setFirstComponent(new JBScrollPane(this.tree));
+        splitter.setSecondComponent(this.keyAndValuePanel);
+        splitter.setHonorComponentsMinimumSize(true);
+
+        setContent(ScrollPaneFactory.createScrollPane(splitter));
+
     }
 
     private void bindTreeModel() {
-        this.newEntryAction.setTreeModel(this.consulPanel.getTreeModel());
-        this.newFolderAction.setTreeModel(this.consulPanel.getTreeModel());
-        this.deleteEntryAction.setTreeModel(this.consulPanel.getTreeModel());
-        this.exportFolderAction.setTreeModel(this.consulPanel.getTreeModel());
-        this.updateEntryAction.setTreeModel(this.consulPanel.getTreeModel());
+        this.newEntryAction.setTreeModel(this.treeModel);
+        this.newFolderAction.setTreeModel(this.treeModel);
+        this.deleteEntryAction.setTreeModel(this.treeModel);
+        this.exportFolderAction.setTreeModel(this.treeModel);
+        this.updateEntryAction.setTreeModel(this.treeModel);
     }
 
     private void configureMessageBus() {
@@ -88,7 +116,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
             @Override
             public void refreshTree() {
                 consul.setConfiguration(consulConfigurationComboBoxAction.getSelection());
-                consulPanel.refresh();
+                refresh();
                 bindTreeModel();
             }
         });
@@ -96,7 +124,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
             @Override
             public void consulConfigurationChanged(ConsulConfiguration newConfiguration) {
                 consul.setConfiguration(newConfiguration);
-                consulPanel.refresh();
+                refresh();
                 bindTreeModel();
             }
         });
@@ -145,7 +173,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         */
 
         ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("consulToolbar", group, true);
-        actionToolBar.setTargetComponent(this.consulPanel);
+        actionToolBar.setTargetComponent(this.tree);
         return JBUI.Panels.simplePanel(actionToolBar.getComponent());
     }
 
@@ -154,16 +182,69 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         this.busConnection.disconnect();
     }
 
-    private void onTreeValueSelected(KeyAndValue keyValue) {
-        DataContext dataContext = SimpleDataContext.getSimpleContext("selectedKeyAndValue", keyValue);
-        AnActionEvent event = AnActionEvent.createFromDataContext("ConsulExplorer", null, dataContext);
-        this.newFolderAction.update(event);
-        this.deleteEntryAction.update(event);
-        this.newEntryAction.update(event);
-        this.updateEntryAction.update(event);
-        this.exportFolderAction.update(event);
+    private void installPopupHandler(Tree tree) {
+        tree.addMouseListener(new PopupHandler() {
+            @Override
+            public void invokePopup(final Component comp, final int x, final int y) {
+                popupInvoked(comp, x, y);
+            }
+        });
     }
 
+    private void popupInvoked(final Component comp, final int x, final int y) {
+        KeyAndValue keyAndValue = null;
+        final TreePath path = tree.getSelectionPath();
+        if (path != null) {
+            KVNode node = (KVNode) path.getLastPathComponent();
+            if (node != null) {
+                keyAndValue = node.getKeyAndValue();
+            }
+        }
+        DefaultActionGroup group = new DefaultActionGroup();
+        NewEntryAction newEntryAction = new NewEntryAction(this.consul, this.messageBus);
+        newEntryAction.setSelectedKeyAndValue(keyAndValue);
+        newEntryAction.setTreeModel(this.treeModel);
 
+        group.add(newEntryAction);
+
+        NewFolderAction newFolderAction = new NewFolderAction(this.consul, this.messageBus);
+        newFolderAction.setSelectedKeyAndValue(keyAndValue);
+        newFolderAction.setTreeModel(this.treeModel);
+
+        group.add(newFolderAction);
+
+        ActionPopupMenu popupMenu = ActionManager.getInstance()
+                .createActionPopupMenu("ConsulTreePopup", group);
+        popupMenu.getComponent().show(comp, x, y);
+    }
+
+    private void initializeTreeModel() {
+        treeModel = new ConsulTreeModel(tree, this.consul);
+        treeModel.setOnValueSelectedListener(this::treeValueSelected);
+        tree.setModel(treeModel);
+        tree.addTreeWillExpandListener(this.treeModel);
+        tree.addTreeSelectionListener(this.treeModel);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    }
+
+    private void treeValueSelected(KeyAndValue kv) {
+        this.keyAndValuePanel.setKeyAndValue(kv);
+        this.selectedKeyAndValue = kv;
+    }
+
+    public void refresh() {
+        initializeTreeModel();
+    }
+
+    @Nullable
+    @Override
+    public Object getData(String s) {
+        if(PlatformDataKeys.SELECTED_ITEM.is(s)) {
+            return this.selectedKeyAndValue;
+        } else {
+            System.out.println("Unknown data " + s);
+        }
+        return null;
+    }
 
 }

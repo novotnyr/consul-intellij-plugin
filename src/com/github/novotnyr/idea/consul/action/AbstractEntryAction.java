@@ -6,6 +6,7 @@ import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.util.messages.MessageBus;
 
 import javax.swing.Icon;
@@ -46,8 +47,8 @@ public abstract class AbstractEntryAction extends AnAction {
 
     @Override
     public void update(AnActionEvent event) {
-        if ("ConsulExplorer".equals(event.getPlace())) {
-            KeyAndValue selectedKeyAndValue = (KeyAndValue) event.getDataContext().getData("selectedKeyAndValue");
+        KeyAndValue selectedKeyAndValue = (KeyAndValue) event.getData(PlatformDataKeys.SELECTED_ITEM);
+        if(selectedKeyAndValue != null) {
             this.enabled = selectedKeyAndValue != null && isEnabledForKeyAndValue(selectedKeyAndValue);;
             this.selectedKeyAndValue = selectedKeyAndValue;
         }
