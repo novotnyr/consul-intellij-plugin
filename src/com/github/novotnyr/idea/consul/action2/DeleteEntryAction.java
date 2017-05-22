@@ -8,8 +8,8 @@ import com.intellij.ui.AnActionButton;
 
 import javax.swing.JLabel;
 
-public class DeleteEntryAction2 extends AbstractButtonAction {
-    public DeleteEntryAction2(Consul consul) {
+public class DeleteEntryAction extends AbstractButtonAction {
+    public DeleteEntryAction(Consul consul) {
         super(consul);
     }
 

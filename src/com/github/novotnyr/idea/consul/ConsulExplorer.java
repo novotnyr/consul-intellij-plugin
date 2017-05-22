@@ -5,7 +5,7 @@ import com.github.novotnyr.idea.consul.action.ExportFolderAction;
 import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
 import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
 import com.github.novotnyr.idea.consul.action2.ConsolidatedNewEntryAction;
-import com.github.novotnyr.idea.consul.action2.DeleteEntryAction2;
+import com.github.novotnyr.idea.consul.action2.DeleteEntryAction;
 import com.github.novotnyr.idea.consul.action2.NewEntryAction2;
 import com.github.novotnyr.idea.consul.action2.NewFolderActionButton2;
 import com.github.novotnyr.idea.consul.action2.UpdateEntryAction2;
@@ -98,7 +98,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
         NewFolderActionButton2 newFolderAction = new NewFolderActionButton2(this.consul);
         ConsolidatedNewEntryAction newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction2(this.consul), newFolderAction, tree, this.consul);
-        DeleteEntryAction2 deleteEntryAction = new DeleteEntryAction2(this.consul);
+        DeleteEntryAction deleteEntryAction = new DeleteEntryAction(this.consul);
         this.updateEntryAction2 = new UpdateEntryAction2(this.consul);
         JPanel decoratedTree = ToolbarDecorator.createDecorator(this.tree)
                 .disableUpDownActions()
