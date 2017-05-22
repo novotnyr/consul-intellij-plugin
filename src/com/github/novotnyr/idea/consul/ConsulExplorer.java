@@ -7,7 +7,7 @@ import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
 import com.github.novotnyr.idea.consul.action2.ConsolidatedNewEntryAction;
 import com.github.novotnyr.idea.consul.action2.DeleteEntryAction;
 import com.github.novotnyr.idea.consul.action2.NewEntryAction;
-import com.github.novotnyr.idea.consul.action2.NewFolderActionButton2;
+import com.github.novotnyr.idea.consul.action2.NewFolderActionButton;
 import com.github.novotnyr.idea.consul.action2.UpdateEntryAction2;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
@@ -96,7 +96,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         // installKeyboardPopupHandler(tree);
 
 
-        NewFolderActionButton2 newFolderAction = new NewFolderActionButton2(this.consul);
+        NewFolderActionButton newFolderAction = new NewFolderActionButton(this.consul);
         ConsolidatedNewEntryAction newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction(this.consul), newFolderAction, tree, this.consul);
         DeleteEntryAction deleteEntryAction = new DeleteEntryAction(this.consul);
         this.updateEntryAction2 = new UpdateEntryAction2(this.consul);
