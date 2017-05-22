@@ -20,7 +20,6 @@ import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DataProvider;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.fileChooser.actions.NewFolderAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBSplitter;
@@ -43,8 +42,6 @@ import java.awt.Component;
 public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable, DataProvider {
 
     private Consul consul;
-
-    private NewFolderAction newFolderAction;
 
     private Project project;
 
@@ -160,7 +157,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         DefaultActionGroup group = new DefaultActionGroup();
 
         group.add(this.refreshTreeAction);
-        group.add(this.newFolderAction);
         group.add(this.exportFolderAction);
         group.add(this.consulConfigurationComboBoxAction);
 
