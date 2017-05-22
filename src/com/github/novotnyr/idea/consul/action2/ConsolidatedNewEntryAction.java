@@ -14,11 +14,11 @@ import java.awt.Rectangle;
 
 
 public class ConsolidatedNewEntryAction extends AbstractButtonAction {
-    private NewEntryAction2 newEntryAction;
+    private NewEntryAction newEntryAction;
     private NewFolderActionButton2 newFolderAction;
     private ConsulTree consulTree;
 
-    public ConsolidatedNewEntryAction(NewEntryAction2 newEntryAction, NewFolderActionButton2 newFolderAction, ConsulTree consulTree, Consul consul) {
+    public ConsolidatedNewEntryAction(NewEntryAction newEntryAction, NewFolderActionButton2 newFolderAction, ConsulTree consulTree, Consul consul) {
         super(consul);
         this.newEntryAction = newEntryAction;
         this.newFolderAction = newFolderAction;
