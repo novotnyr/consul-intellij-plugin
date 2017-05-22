@@ -8,7 +8,7 @@ import com.github.novotnyr.idea.consul.action2.ConsolidatedNewEntryAction;
 import com.github.novotnyr.idea.consul.action2.DeleteEntryAction;
 import com.github.novotnyr.idea.consul.action2.NewEntryAction;
 import com.github.novotnyr.idea.consul.action2.NewFolderActionButton;
-import com.github.novotnyr.idea.consul.action2.UpdateEntryAction2;
+import com.github.novotnyr.idea.consul.action2.UpdateEntryAction;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
@@ -48,7 +48,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
     private Project project;
 
-    private UpdateEntryAction2 updateEntryAction2;
+    private UpdateEntryAction updateEntryAction;
 
     private ConsulConfigurationComboBoxAction consulConfigurationComboBoxAction;
 
@@ -99,7 +99,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         NewFolderActionButton newFolderAction = new NewFolderActionButton(this.consul);
         ConsolidatedNewEntryAction newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction(this.consul), newFolderAction, tree, this.consul);
         DeleteEntryAction deleteEntryAction = new DeleteEntryAction(this.consul);
-        this.updateEntryAction2 = new UpdateEntryAction2(this.consul);
+        this.updateEntryAction = new UpdateEntryAction(this.consul);
         JPanel decoratedTree = ToolbarDecorator.createDecorator(this.tree)
                 .disableUpDownActions()
                 .setAddAction(newEntryAction)
@@ -145,7 +145,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         this.busConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED, new Topics.KeyValueChanged() {
             @Override
             public void keyValueChanged(KeyAndValue keyAndValue) {
-                updateEntryAction2.update(keyAndValue);
+                updateEntryAction.update(keyAndValue);
             }
         });
     }
@@ -226,7 +226,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
     private void treeValueSelected(KeyAndValue kv) {
         this.keyAndValuePanel.setKeyAndValue(kv);
         this.selectedKeyAndValue = kv;
-        this.updateEntryAction2.isEnabled(this.tree);
+        this.updateEntryAction.isEnabled(this.tree);
     }
 
     public void refresh() {

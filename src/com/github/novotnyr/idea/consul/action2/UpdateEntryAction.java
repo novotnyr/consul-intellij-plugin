@@ -6,8 +6,8 @@ import com.github.novotnyr.idea.consul.ui.KeyAndValueEditorPanel;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.ui.AnActionButton;
 
-public class UpdateEntryAction2 extends AbstractButtonAction {
-    public UpdateEntryAction2(Consul consul) {
+public class UpdateEntryAction extends AbstractButtonAction {
+    public UpdateEntryAction(Consul consul) {
         super(consul);
     }
 
