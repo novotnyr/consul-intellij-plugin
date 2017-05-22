@@ -37,6 +37,12 @@ public class NewEntryAction extends AbstractEntryAction {
     }
 
     @Override
+    public void update(AnActionEvent event) {
+        super.update(event);
+        System.out.println("NewEntry event()" + event.getDataContext());
+    }
+
+    @Override
     protected boolean isEnabledForKeyAndValue(KeyAndValue keyAndValue) {
         return keyAndValue.isContainer();
     }

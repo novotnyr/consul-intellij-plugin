@@ -8,6 +8,11 @@ import com.github.novotnyr.idea.consul.action.NewFolderAction;
 import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
 import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
 import com.github.novotnyr.idea.consul.action.UpdateEntryAction;
+import com.github.novotnyr.idea.consul.action2.ConsolidatedNewEntryAction;
+import com.github.novotnyr.idea.consul.action2.DeleteEntryAction2;
+import com.github.novotnyr.idea.consul.action2.NewEntryAction2;
+import com.github.novotnyr.idea.consul.action2.NewFolderActionButton2;
+import com.github.novotnyr.idea.consul.action2.UpdateEntryAction2;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
@@ -19,13 +24,12 @@ import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DataProvider;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
@@ -34,6 +38,7 @@ import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.Component;
@@ -52,6 +57,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
     private UpdateEntryAction updateEntryAction;
 
+    private UpdateEntryAction2 updateEntryAction2;
+
     private ConsulConfigurationComboBoxAction consulConfigurationComboBoxAction;
 
     private final MessageBus messageBus;
@@ -68,6 +75,10 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
     private KeyAndValue selectedKeyAndValue;
 
+    private RefreshTreeAction refreshTreeAction;
+
+    private ShowSettingsAction showSettingsAction;
+
     public ConsulExplorer(Project project) {
         super(true);
 
@@ -76,10 +87,11 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         this.messageBus = this.project.getMessageBus();
         this.busConnection = messageBus.connect();
 
-        this.consulConfigurationComboBoxAction = new ConsulConfigurationComboBoxAction(this.project.getMessageBus());
+        this.consulConfigurationComboBoxAction = new ConsulConfigurationComboBoxAction(this.messageBus);
         this.consulConfigurationComboBoxAction.refreshItems();
 
         this.consul = new Consul(consulConfigurationComboBoxAction.getSelection());
+        initActions();
 
         setToolbar(createToolbarPanel());
 
@@ -90,12 +102,27 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         initializeTreeModel();
         TreeUtil.installActions(tree);
         installPopupHandler(tree);
+        // installKeyboardPopupHandler(tree);
+
+
+        NewFolderActionButton2 newFolderAction = new NewFolderActionButton2(this.consul);
+        ConsolidatedNewEntryAction newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction2(this.consul), newFolderAction, tree, this.consul);
+        DeleteEntryAction2 deleteEntryAction = new DeleteEntryAction2(this.consul);
+        this.updateEntryAction2 = new UpdateEntryAction2(this.consul);
+        JPanel decoratedTree = ToolbarDecorator.createDecorator(this.tree)
+                .disableUpDownActions()
+                .setAddAction(newEntryAction)
+                .setAddActionUpdater(newEntryAction)
+                .setRemoveAction(deleteEntryAction)
+                .setRemoveActionUpdater(deleteEntryAction)
+                .createPanel();
+
 
         this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, treeModel);
 
 
         JBSplitter splitter = new JBSplitter(true, 0.8f, 0.1f, 0.9f);
-        splitter.setFirstComponent(new JBScrollPane(this.tree));
+        splitter.setFirstComponent(decoratedTree);
         splitter.setSecondComponent(this.keyAndValuePanel);
         splitter.setHonorComponentsMinimumSize(true);
 
@@ -131,35 +158,34 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         this.busConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED, new Topics.KeyValueChanged() {
             @Override
             public void keyValueChanged(KeyAndValue keyAndValue) {
-                updateEntryAction.update(keyAndValue);
+                updateEntryAction2.update(keyAndValue);
             }
         });
     }
 
+    private void initActions() {
+        this.refreshTreeAction = new RefreshTreeAction(this.messageBus);
+        this.newFolderAction = new NewFolderAction(this.consul, this.messageBus);
+        this.newEntryAction = new NewEntryAction(this.consul, this.messageBus);
+        this.deleteEntryAction = new DeleteEntryAction(this.consul, this.messageBus);
+        this.updateEntryAction = new UpdateEntryAction(this.consul, this.messageBus);
+        this.exportFolderAction = new ExportFolderAction(this.consul, this.messageBus);
+        this.showSettingsAction = new ShowSettingsAction();
+    }
+
     private JComponent createToolbarPanel() {
         DefaultActionGroup group = new DefaultActionGroup();
-        RefreshTreeAction action = new RefreshTreeAction(this.project.getMessageBus());
-        group.add(action);
 
-        this.newFolderAction = new NewFolderAction(this.consul, this.project.getMessageBus());
+        group.add(this.refreshTreeAction);
         group.add(this.newFolderAction);
-
-        this.newEntryAction = new NewEntryAction(this.consul, this.project.getMessageBus());
         group.add(this.newEntryAction);
-
-        this.deleteEntryAction = new DeleteEntryAction(this.consul, this.project.getMessageBus());
-        group.add(deleteEntryAction);
-
-        this.updateEntryAction = new UpdateEntryAction(this.consul, this.project.getMessageBus());
-
-        this.exportFolderAction = new ExportFolderAction(this.consul, this.project.getMessageBus());
-        group.add(exportFolderAction);
-
-        group.add(consulConfigurationComboBoxAction);
+        group.add(this.deleteEntryAction);
+        group.add(this.exportFolderAction);
+        group.add(this.consulConfigurationComboBoxAction);
 
         group.addSeparator();
 
-        group.add(new ShowSettingsAction());
+        group.add(this.showSettingsAction);
 
         /*
         AnAction action = CommonActionsManager.getInstance().createExpandAllAction(myTreeExpander, this);
@@ -230,6 +256,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
     private void treeValueSelected(KeyAndValue kv) {
         this.keyAndValuePanel.setKeyAndValue(kv);
         this.selectedKeyAndValue = kv;
+        this.updateEntryAction2.isEnabled(this.tree);
     }
 
     public void refresh() {
@@ -239,11 +266,21 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
     @Nullable
     @Override
     public Object getData(String s) {
+        /*
         if(PlatformDataKeys.SELECTED_ITEM.is(s)) {
             return this.selectedKeyAndValue;
         } else {
-            System.out.println("Unknown data " + s);
+            if(PlatformDataKeys.CONTEXT_MENU_POINT.is(s)) {
+                System.out.println("Context menu point " + s);
+            } else if(LangDataKeys.IDE_VIEW.is(s)) {
+                System.out.println("IDE View " + s);
+            } else if(PlatformDataKeys.NAVIGATABLE_ARRAY.is(s)) {
+                System.out.println("Navigatable array " + s);
+            } else {
+                System.out.println("Unknown data " + s);
+            }
         }
+        */
         return null;
     }
 

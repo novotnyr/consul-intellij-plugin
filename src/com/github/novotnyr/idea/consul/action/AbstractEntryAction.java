@@ -47,10 +47,19 @@ public abstract class AbstractEntryAction extends AnAction {
 
     @Override
     public void update(AnActionEvent event) {
-        KeyAndValue selectedKeyAndValue = (KeyAndValue) event.getData(PlatformDataKeys.SELECTED_ITEM);
-        if(selectedKeyAndValue != null) {
-            this.enabled = selectedKeyAndValue != null && isEnabledForKeyAndValue(selectedKeyAndValue);;
-            this.selectedKeyAndValue = selectedKeyAndValue;
+        Object selectedItemData = event.getData(PlatformDataKeys.SELECTED_ITEM);
+        if(selectedItemData == null) {
+            return;
+        }
+
+        if(selectedItemData instanceof KeyAndValue) {
+            KeyAndValue selectedKeyAndValue = (KeyAndValue) event.getData(PlatformDataKeys.SELECTED_ITEM);
+            if(selectedKeyAndValue != null) {
+                this.enabled = selectedKeyAndValue != null && isEnabledForKeyAndValue(selectedKeyAndValue);;
+                this.selectedKeyAndValue = selectedKeyAndValue;
+            }
+        } else {
+            System.out.println("Selected" + selectedItemData);
         }
         event.getPresentation().setEnabled(this.enabled);
     }

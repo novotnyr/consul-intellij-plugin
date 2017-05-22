@@ -25,6 +25,8 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
     private DefaultTreeModel delegateModel;
 
+    private KeyAndValue selectedKeyAndValue;
+
     public ConsulTreeModel(JTree tree, Consul consul) {
         this.tree = tree;
         this.consul = consul;
@@ -106,7 +108,8 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
             return;
         }
         KVNode node = (KVNode) newPath.getLastPathComponent();
-        this.onValueSelectedListener.onValueSelected(node.getKeyAndValue());
+        this.selectedKeyAndValue = node.getKeyAndValue();
+        this.onValueSelectedListener.onValueSelected(this.selectedKeyAndValue);
     }
 
 
@@ -170,6 +173,10 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
     public Consul getConsul() {
         return consul;
+    }
+
+    public KeyAndValue getSelectedKeyAndValue() {
+        return selectedKeyAndValue;
     }
 
     public interface OnValueSelectedListener {
