@@ -13,7 +13,7 @@ import javax.swing.tree.TreePath;
 import java.awt.Rectangle;
 
 
-public class ConsolidatedNewEntryAction extends AbstractButtonAction {
+public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
     private NewEntryAction newEntryAction;
     private NewFolderActionButton newFolderAction;
     private ConsulTree consulTree;

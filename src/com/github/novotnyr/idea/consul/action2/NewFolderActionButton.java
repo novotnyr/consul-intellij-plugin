@@ -7,7 +7,7 @@ import com.intellij.ui.AnActionButton;
 
 import javax.swing.JTextField;
 
-public class NewFolderActionButton extends AbstractButtonAction {
+public class NewFolderActionButton extends AbstractConsulButtonController {
     public NewFolderActionButton(Consul consul) {
         super(consul);
     }

@@ -12,12 +12,12 @@ import com.intellij.ui.AnActionButtonUpdater;
 import java.awt.Component;
 import java.util.Optional;
 
-public abstract class AbstractButtonAction implements AnActionButtonRunnable, AnActionButtonUpdater {
+public abstract class AbstractConsulButtonController implements AnActionButtonRunnable, AnActionButtonUpdater {
     private ConsulTree consulTree;
 
     private Consul consul;
 
-    public AbstractButtonAction(Consul consul) {
+    public AbstractConsulButtonController(Consul consul) {
         this.consul = consul;
     }
 
