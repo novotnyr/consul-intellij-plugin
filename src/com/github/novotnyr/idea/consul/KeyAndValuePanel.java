@@ -1,9 +1,7 @@
 package com.github.novotnyr.idea.consul;
 
-import com.github.novotnyr.idea.consul.action.DeleteEntryAction;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
-import com.github.novotnyr.idea.consul.tree.TreeUtils;
 import com.github.novotnyr.idea.consul.ui.BottomToolWindowPanel;
 import com.github.novotnyr.idea.consul.ui.FolderContentsTablePanel;
 import com.intellij.icons.AllIcons;
@@ -46,7 +44,6 @@ public class KeyAndValuePanel extends JPanel {
     private SubmitChangesAction submitChangesAction;
 
     private Mode viewMode;
-    private DeleteEntryAction deleteEntryAction;
 
     public KeyAndValuePanel(@NotNull MessageBus messageBus, @NotNull ConsulTreeModel consulTree) {
         super();
@@ -95,9 +92,6 @@ public class KeyAndValuePanel extends JPanel {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(this.submitChangesAction = new SubmitChangesAction());
 
-        group.add(this.deleteEntryAction = new DeleteEntryAction(this.consulTree.getConsul(), this.messageBus, true));
-        this.deleteEntryAction.setTreeModel(this.consulTree);
-
         return group;
     }
 
@@ -110,8 +104,6 @@ public class KeyAndValuePanel extends JPanel {
     public void setKeyAndValue(KeyAndValue keyAndValue) {
         this.keyAndValue = keyAndValue;
         this.fqnKeyLabel.setText(keyAndValue.getFullyQualifiedKey());
-
-        this.deleteEntryAction.update(TreeUtils.getEventForSelectedKeyAndValue(keyAndValue));
 
         CardLayout cardLayout = (CardLayout) this.middlePanel.getLayout();
         if(keyAndValue.isContainer()) {

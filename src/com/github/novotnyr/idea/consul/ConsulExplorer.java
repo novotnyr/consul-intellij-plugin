@@ -1,13 +1,9 @@
 package com.github.novotnyr.idea.consul;
 
 import com.github.novotnyr.idea.consul.action.ConsulConfigurationComboBoxAction;
-import com.github.novotnyr.idea.consul.action.DeleteEntryAction;
 import com.github.novotnyr.idea.consul.action.ExportFolderAction;
-import com.github.novotnyr.idea.consul.action.NewEntryAction;
-import com.github.novotnyr.idea.consul.action.NewFolderAction;
 import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
 import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
-import com.github.novotnyr.idea.consul.action.UpdateEntryAction;
 import com.github.novotnyr.idea.consul.action2.ConsolidatedNewEntryAction;
 import com.github.novotnyr.idea.consul.action2.DeleteEntryAction2;
 import com.github.novotnyr.idea.consul.action2.NewEntryAction2;
@@ -24,6 +20,7 @@ import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DataProvider;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.fileChooser.actions.NewFolderAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBSplitter;
@@ -50,12 +47,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
     private NewFolderAction newFolderAction;
 
     private Project project;
-
-    private DeleteEntryAction deleteEntryAction;
-
-    private NewEntryAction newEntryAction;
-
-    private UpdateEntryAction updateEntryAction;
 
     private UpdateEntryAction2 updateEntryAction2;
 
@@ -131,11 +122,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
     }
 
     private void bindTreeModel() {
-        this.newEntryAction.setTreeModel(this.treeModel);
-        this.newFolderAction.setTreeModel(this.treeModel);
-        this.deleteEntryAction.setTreeModel(this.treeModel);
         this.exportFolderAction.setTreeModel(this.treeModel);
-        this.updateEntryAction.setTreeModel(this.treeModel);
     }
 
     private void configureMessageBus() {
@@ -165,10 +152,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
     private void initActions() {
         this.refreshTreeAction = new RefreshTreeAction(this.messageBus);
-        this.newFolderAction = new NewFolderAction(this.consul, this.messageBus);
-        this.newEntryAction = new NewEntryAction(this.consul, this.messageBus);
-        this.deleteEntryAction = new DeleteEntryAction(this.consul, this.messageBus);
-        this.updateEntryAction = new UpdateEntryAction(this.consul, this.messageBus);
         this.exportFolderAction = new ExportFolderAction(this.consul, this.messageBus);
         this.showSettingsAction = new ShowSettingsAction();
     }
@@ -178,8 +161,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
         group.add(this.refreshTreeAction);
         group.add(this.newFolderAction);
-        group.add(this.newEntryAction);
-        group.add(this.deleteEntryAction);
         group.add(this.exportFolderAction);
         group.add(this.consulConfigurationComboBoxAction);
 
@@ -227,17 +208,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
             }
         }
         DefaultActionGroup group = new DefaultActionGroup();
-        NewEntryAction newEntryAction = new NewEntryAction(this.consul, this.messageBus);
-        newEntryAction.setSelectedKeyAndValue(keyAndValue);
-        newEntryAction.setTreeModel(this.treeModel);
-
-        group.add(newEntryAction);
-
-        NewFolderAction newFolderAction = new NewFolderAction(this.consul, this.messageBus);
-        newFolderAction.setSelectedKeyAndValue(keyAndValue);
-        newFolderAction.setTreeModel(this.treeModel);
-
-        group.add(newFolderAction);
 
         ActionPopupMenu popupMenu = ActionManager.getInstance()
                 .createActionPopupMenu("ConsulTreePopup", group);
