@@ -1,13 +1,13 @@
 package com.github.novotnyr.idea.consul;
 
-import com.github.novotnyr.idea.consul.action.ConsulConfigurationComboBoxAction;
-import com.github.novotnyr.idea.consul.action.ExportFolderAction;
-import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
-import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
 import com.github.novotnyr.idea.consul.action.ConsolidatedNewEntryAction;
+import com.github.novotnyr.idea.consul.action.ConsulConfigurationComboBoxAction;
 import com.github.novotnyr.idea.consul.action.DeleteEntryAction;
+import com.github.novotnyr.idea.consul.action.ExportFolderAction;
 import com.github.novotnyr.idea.consul.action.NewEntryAction;
 import com.github.novotnyr.idea.consul.action.NewFolderActionButton;
+import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
+import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
 import com.github.novotnyr.idea.consul.action.UpdateEntryAction;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
@@ -109,7 +109,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         splitter.setSecondComponent(this.keyAndValuePanel);
 
         setContent(ScrollPaneFactory.createScrollPane(splitter));
-
     }
 
     private void bindTreeModel() {

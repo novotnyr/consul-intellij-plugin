@@ -10,6 +10,7 @@ import com.intellij.ui.table.JBTable;
 import javax.swing.JPanel;
 import javax.swing.table.AbstractTableModel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,8 @@ public class FolderContentsTablePanel extends JPanel {
         this.tableScrollPane = new JBScrollPane(this.table);
         refresh(consulTree, keyAndValue);
         add(this.tableScrollPane, BorderLayout.CENTER);
+
+        setPreferredSize(new Dimension(-1, -1));
     }
 
     public void refresh(ConsulTreeModel consulTree, KeyAndValue keyAndValue) {

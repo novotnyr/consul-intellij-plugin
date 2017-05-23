@@ -24,14 +24,13 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Dimension;
 
 public class KeyAndValuePanel extends JPanel {
     private MessageBus messageBus;
 
     private JLabel fqnKeyLabel = new JLabel("N/A");
 
-    private JTextArea valueTextArea = new JTextArea(10, 15);
+    private JTextArea valueTextArea = new JTextArea();
 
     private KeyAndValue keyAndValue;
 
@@ -65,8 +64,6 @@ public class KeyAndValuePanel extends JPanel {
         this.middlePanel.add(getFolderContentPane(), Mode.FOLDER.name());
 
         add(this.middlePanel, BorderLayout.CENTER);
-
-        setMinimumSize(new Dimension(20, 200));
     }
 
     private JComponent getValuePane() {
