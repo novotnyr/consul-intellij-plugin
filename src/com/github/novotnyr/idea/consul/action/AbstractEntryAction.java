@@ -52,8 +52,6 @@ public abstract class AbstractEntryAction extends AnAction {
                 this.enabled = selectedKeyAndValue != null && isEnabledForKeyAndValue(selectedKeyAndValue);;
                 this.selectedKeyAndValue = selectedKeyAndValue;
             }
-        } else {
-            System.out.println("Selected" + selectedItemData);
         }
         event.getPresentation().setEnabled(this.enabled);
     }
