@@ -1,4 +1,4 @@
-package com.github.novotnyr.idea.consul.action2;
+package com.github.novotnyr.idea.consul.action;
 
 import com.github.novotnyr.idea.consul.Consul;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;

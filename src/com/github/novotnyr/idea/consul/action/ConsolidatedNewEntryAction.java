@@ -1,4 +1,4 @@
-package com.github.novotnyr.idea.consul.action2;
+package com.github.novotnyr.idea.consul.action;
 
 import com.github.novotnyr.idea.consul.Consul;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
@@ -27,7 +27,7 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
 
     @Override
     public void run(AnActionButton button) {
-        JBList<NewEntryType> list = new JBList<>(NewEntryType.FOLDER, NewEntryType.ITEM);
+        JBList<NewEntryType> list = new JBList<>(NewEntryType.ITEM, NewEntryType.FOLDER);
         JBPopup popup = JBPopupFactory.getInstance()
                 .createListPopupBuilder(list)
                 .setItemChoosenCallback(() -> onPopupListItemChoosenCallback(list))

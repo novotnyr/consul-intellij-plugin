@@ -4,43 +4,35 @@ import com.github.novotnyr.idea.consul.action.ConsulConfigurationComboBoxAction;
 import com.github.novotnyr.idea.consul.action.ExportFolderAction;
 import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
 import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
-import com.github.novotnyr.idea.consul.action2.ConsolidatedNewEntryAction;
-import com.github.novotnyr.idea.consul.action2.DeleteEntryAction;
-import com.github.novotnyr.idea.consul.action2.NewEntryAction;
-import com.github.novotnyr.idea.consul.action2.NewFolderActionButton;
-import com.github.novotnyr.idea.consul.action2.UpdateEntryAction;
+import com.github.novotnyr.idea.consul.action.ConsolidatedNewEntryAction;
+import com.github.novotnyr.idea.consul.action.DeleteEntryAction;
+import com.github.novotnyr.idea.consul.action.NewEntryAction;
+import com.github.novotnyr.idea.consul.action.NewFolderActionButton;
+import com.github.novotnyr.idea.consul.action.UpdateEntryAction;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
-import com.github.novotnyr.idea.consul.tree.KVNode;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.DataProvider;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.JBSplitter;
-import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.tree.TreeUtil;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.Component;
 
-public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable, DataProvider {
+public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable {
 
     private Consul consul;
 
@@ -62,11 +54,15 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
     private KeyAndValuePanel keyAndValuePanel;
 
-    private KeyAndValue selectedKeyAndValue;
-
     private RefreshTreeAction refreshTreeAction;
 
     private ShowSettingsAction showSettingsAction;
+
+    private NewFolderActionButton newFolderAction;
+
+    private ConsolidatedNewEntryAction newEntryAction;
+
+    private DeleteEntryAction deleteEntryAction;
 
     public ConsulExplorer(Project project) {
         super(true);
@@ -90,25 +86,22 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         initializeTreeModel();
         bindTreeModel();
         TreeUtil.installActions(tree);
-        installPopupHandler(tree);
-        // installKeyboardPopupHandler(tree);
 
-
-        NewFolderActionButton newFolderAction = new NewFolderActionButton(this.consul);
-        ConsolidatedNewEntryAction newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction(this.consul), newFolderAction, tree, this.consul);
-        DeleteEntryAction deleteEntryAction = new DeleteEntryAction(this.consul);
+        this.newFolderAction = new NewFolderActionButton(this.consul);
+        this.newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction(this.consul), this.newFolderAction, tree, this.consul);
+        this.deleteEntryAction = new DeleteEntryAction(this.consul);
         this.updateEntryAction = new UpdateEntryAction(this.consul);
         JPanel decoratedTree = ToolbarDecorator.createDecorator(this.tree)
                 .disableUpDownActions()
-                .setAddAction(newEntryAction)
-                .setAddActionUpdater(newEntryAction)
-                .setRemoveAction(deleteEntryAction)
-                .setRemoveActionUpdater(deleteEntryAction)
-                .addExtraAction(AnActionButton.fromAction(exportFolderAction))
+                .setAddAction(this.newEntryAction)
+                .setAddActionUpdater(this.newEntryAction)
+                .setRemoveAction(this.deleteEntryAction)
+                .setRemoveActionUpdater(this.deleteEntryAction)
+                .addExtraAction(AnActionButton.fromAction(this.exportFolderAction))
                 .createPanel();
 
 
-        this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, treeModel);
+        this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, this.treeModel);
 
 
         JBSplitter splitter = new JBSplitter(true, 0.6f, 0.1f, 0.9f);
@@ -159,21 +152,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
         group.add(this.refreshTreeAction);
         group.add(this.consulConfigurationComboBoxAction);
-
         group.addSeparator();
-
         group.add(this.showSettingsAction);
-
-        /*
-        AnAction action = CommonActionsManager.getInstance().createExpandAllAction(myTreeExpander, this);
-        action.getTemplatePresentation().setDescription(AntBundle.message("ant.explorer.expand.all.nodes.action.description"));
-        group.add(action);
-        action = CommonActionsManager.getInstance().createCollapseAllAction(myTreeExpander, this);
-        action.getTemplatePresentation().setDescription(AntBundle.message("ant.explorer.collapse.all.nodes.action.description"));
-        group.add(action);
-        group.add(myAntBuildFilePropertiesAction);
-        group.add(new ContextHelpAction(HelpID.ANT));
-        */
 
         ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("consulToolbar", group, true);
         actionToolBar.setTargetComponent(this.tree);
@@ -183,31 +163,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
     @Override
     public void dispose() {
         this.busConnection.disconnect();
-    }
-
-    private void installPopupHandler(Tree tree) {
-        tree.addMouseListener(new PopupHandler() {
-            @Override
-            public void invokePopup(final Component comp, final int x, final int y) {
-                popupInvoked(comp, x, y);
-            }
-        });
-    }
-
-    private void popupInvoked(final Component comp, final int x, final int y) {
-        KeyAndValue keyAndValue = null;
-        final TreePath path = tree.getSelectionPath();
-        if (path != null) {
-            KVNode node = (KVNode) path.getLastPathComponent();
-            if (node != null) {
-                keyAndValue = node.getKeyAndValue();
-            }
-        }
-        DefaultActionGroup group = new DefaultActionGroup();
-
-        ActionPopupMenu popupMenu = ActionManager.getInstance()
-                .createActionPopupMenu("ConsulTreePopup", group);
-        popupMenu.getComponent().show(comp, x, y);
     }
 
     private void initializeTreeModel() {
@@ -221,33 +176,11 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
     private void treeValueSelected(KeyAndValue kv) {
         this.keyAndValuePanel.setKeyAndValue(kv);
-        this.selectedKeyAndValue = kv;
         this.updateEntryAction.isEnabled(this.tree);
     }
 
     public void refresh() {
         initializeTreeModel();
-    }
-
-    @Nullable
-    @Override
-    public Object getData(String s) {
-        /*
-        if(PlatformDataKeys.SELECTED_ITEM.is(s)) {
-            return this.selectedKeyAndValue;
-        } else {
-            if(PlatformDataKeys.CONTEXT_MENU_POINT.is(s)) {
-                System.out.println("Context menu point " + s);
-            } else if(LangDataKeys.IDE_VIEW.is(s)) {
-                System.out.println("IDE View " + s);
-            } else if(PlatformDataKeys.NAVIGATABLE_ARRAY.is(s)) {
-                System.out.println("Navigatable array " + s);
-            } else {
-                System.out.println("Unknown data " + s);
-            }
-        }
-        */
-        return null;
     }
 
 }
