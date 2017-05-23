@@ -80,7 +80,7 @@ public class KeyAndValueEditorPanel extends JPanel {
         valueScrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(valueScrollPane, cColumns2);
 
-        setPreferredSize(new Dimension(300, 200));
+        setPreferredSize(new Dimension(300, 150));
     }
 
     private void bindFromModel() {

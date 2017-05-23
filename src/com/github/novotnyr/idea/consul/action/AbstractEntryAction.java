@@ -1,7 +1,6 @@
 package com.github.novotnyr.idea.consul.action;
 
 import com.github.novotnyr.idea.consul.Consul;
-import com.github.novotnyr.idea.consul.Topics;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -39,11 +38,6 @@ public abstract class AbstractEntryAction extends AnAction {
     }
 
     protected abstract void onActionPerformed(String fqn, AnActionEvent event);
-
-    protected void refreshTree() {
-        messageBus.syncPublisher(Topics.RefreshTree.REFRESH_TREE_TOPIC).refreshTree();
-    }
-
 
     @Override
     public void update(AnActionEvent event) {

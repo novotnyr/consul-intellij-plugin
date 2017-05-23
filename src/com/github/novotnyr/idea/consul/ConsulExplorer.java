@@ -22,6 +22,7 @@ import com.intellij.openapi.actionSystem.DataProvider;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.ui.AnActionButton;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ScrollPaneFactory;
@@ -83,11 +84,11 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
         setToolbar(createToolbarPanel());
 
-        bindTreeModel();
         configureMessageBus();
 
         this.tree = new ConsulTree();
         initializeTreeModel();
+        bindTreeModel();
         TreeUtil.installActions(tree);
         installPopupHandler(tree);
         // installKeyboardPopupHandler(tree);
@@ -103,16 +104,16 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
                 .setAddActionUpdater(newEntryAction)
                 .setRemoveAction(deleteEntryAction)
                 .setRemoveActionUpdater(deleteEntryAction)
+                .addExtraAction(AnActionButton.fromAction(exportFolderAction))
                 .createPanel();
 
 
         this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, treeModel);
 
 
-        JBSplitter splitter = new JBSplitter(true, 0.8f, 0.1f, 0.9f);
+        JBSplitter splitter = new JBSplitter(true, 0.6f, 0.1f, 0.9f);
         splitter.setFirstComponent(decoratedTree);
         splitter.setSecondComponent(this.keyAndValuePanel);
-        splitter.setHonorComponentsMinimumSize(true);
 
         setContent(ScrollPaneFactory.createScrollPane(splitter));
 
@@ -157,7 +158,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         DefaultActionGroup group = new DefaultActionGroup();
 
         group.add(this.refreshTreeAction);
-        group.add(this.exportFolderAction);
         group.add(this.consulConfigurationComboBoxAction);
 
         group.addSeparator();

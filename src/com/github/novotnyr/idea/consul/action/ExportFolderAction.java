@@ -65,6 +65,11 @@ public class ExportFolderAction extends AbstractEntryAction {
         return CommonDataKeys.PROJECT.getData(event.getDataContext());
     }
 
+    @Override
+    protected boolean isEnabledForKeyAndValue(KeyAndValue keyAndValue) {
+        return keyAndValue.isContainer();
+    }
+
     public void setTreeModel(ConsulTreeModel treeModel) {
         this.treeModel = treeModel;
     }
