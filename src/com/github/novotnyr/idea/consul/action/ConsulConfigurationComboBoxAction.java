@@ -51,7 +51,14 @@ public class ConsulConfigurationComboBoxAction extends AbstractComboBoxAction<Co
         if (consulConfiguration == null) {
             return "- none -";
         }
-        return consulConfiguration.getHost() + ":" + consulConfiguration.getPort();
+        StringBuilder buffer = new StringBuilder()
+                .append(consulConfiguration.getHost())
+                .append(":")
+                .append(consulConfiguration.getPort());
+        if(consulConfiguration.getDatacenter() != null) {
+            buffer.append(" [").append(consulConfiguration.getDatacenter()).append("]");
+        }
+        return buffer.toString();
     }
 
     @Override
