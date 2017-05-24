@@ -1,8 +1,8 @@
 package com.github.novotnyr.idea.consul.tree;
 
 import com.github.novotnyr.idea.consul.Consul;
+import com.intellij.ui.treeStructure.Tree;
 
-import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -15,7 +15,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionListener, TreeModel {
-    private JTree tree;
+    private Tree tree;
 
     private Consul consul;
 
@@ -27,7 +27,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
     private KeyAndValue selectedKeyAndValue;
 
-    public ConsulTreeModel(JTree tree, Consul consul) {
+    public ConsulTreeModel(Tree tree, Consul consul) {
         this.tree = tree;
         this.consul = consul;
 
@@ -45,6 +45,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
     public Object getRoot() {
         ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
         if(!this.loaded) {
+            tree.setPaintBusy(true);
             loader.setOnDoneListener(treeRoot -> {
                 ConsulTreeModel.this.loaded = true;
                 DefaultTreeModel delegate = ConsulTreeModel.this.delegateModel;
@@ -54,6 +55,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
                 treeRoot.setKeyAndValue(new RootKeyAndValue().withMessage(treeRootNodeLabel));
 
                 delegate.setRoot(treeRoot);
+                tree.setPaintBusy(false);
             });
             loader.run();
         }
