@@ -10,6 +10,7 @@ import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.components.JBList;
 
 import javax.swing.tree.TreePath;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 
@@ -37,7 +38,9 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
         if(leadSelectionPath != null) {
             int rowForPath = consulTree.getRowForPath(leadSelectionPath);
             Rectangle rowBounds = consulTree.getRowBounds(rowForPath);
-            popup.show(new RelativePoint(consulTree, rowBounds.getLocation()));
+            Point location = rowBounds.getLocation();
+            location.translate(0, (int) rowBounds.getHeight());
+            popup.show(new RelativePoint(consulTree, location));
         } else {
             final RelativePoint popupPoint = button.getPreferredPopupPoint();
             if (popupPoint != null) {
