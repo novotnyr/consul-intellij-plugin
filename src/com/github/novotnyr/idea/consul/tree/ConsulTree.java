@@ -1,5 +1,6 @@
 package com.github.novotnyr.idea.consul.tree;
 
+import com.intellij.ide.CopyProvider;
 import com.intellij.ide.PasteProvider;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataProvider;
@@ -10,8 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 
-public class ConsulTree extends Tree implements DataProvider, PasteProvider {
+public class ConsulTree extends Tree implements DataProvider, PasteProvider, CopyProvider {
     public ConsulTreeModel getConsulTreeModel() {
         return (ConsulTreeModel) super.getModel();
     }
@@ -25,6 +27,9 @@ public class ConsulTree extends Tree implements DataProvider, PasteProvider {
         if(PlatformDataKeys.PASTE_PROVIDER.is(dataId)) {
             return this;
         }
+        if(PlatformDataKeys.COPY_PROVIDER.is(dataId)) {
+            return this;
+        }
         return null;
     }
 
@@ -35,7 +40,7 @@ public class ConsulTree extends Tree implements DataProvider, PasteProvider {
         if (clipboardContents == null) {
             return;
         }
-        String[] split = clipboardContents.split("=", 1);
+        String[] split = clipboardContents.split("=", 2);
         KeyAndValue selectedKeyAndValue = getSelectedKeyAndValue();
         KeyAndValue newKeyAndValue = new KeyAndValue(selectedKeyAndValue.getFullyQualifiedKey() + split[0], split[1]);
 
@@ -63,5 +68,27 @@ public class ConsulTree extends Tree implements DataProvider, PasteProvider {
     @Override
     public boolean isPasteEnabled(@NotNull DataContext dataContext) {
         return isPastePossible(dataContext);
+    }
+
+    @Override
+    public void performCopy(@NotNull DataContext dataContext) {
+        KeyAndValue selectedKeyAndValue = getSelectedKeyAndValue();
+        String exportedString;
+        if (selectedKeyAndValue.isContainer()) {
+            exportedString = selectedKeyAndValue.getKey();
+        } else {
+            exportedString = selectedKeyAndValue.getKey() + "=" + selectedKeyAndValue.getValue();
+        }
+        CopyPasteManager.getInstance().setContents(new StringSelection(exportedString));
+    }
+
+    @Override
+    public boolean isCopyEnabled(@NotNull DataContext dataContext) {
+        return getSelectedKeyAndValue() != null;
+    }
+
+    @Override
+    public boolean isCopyVisible(@NotNull DataContext dataContext) {
+        return isCopyEnabled(dataContext);
     }
 }
