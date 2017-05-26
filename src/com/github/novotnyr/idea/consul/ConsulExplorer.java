@@ -103,7 +103,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
 
         this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, this.treeModel);
 
-
         JBSplitter splitter = new JBSplitter(true, 0.6f, 0.1f, 0.9f);
         splitter.setFirstComponent(decoratedTree);
         splitter.setSecondComponent(this.keyAndValuePanel);
@@ -182,4 +181,11 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         initializeTreeModel();
     }
 
+    public void setKeyValuesVisible(boolean keyValuesVisible) {
+        this.tree.setKeyValuesVisible(keyValuesVisible);
+    }
+
+    public boolean getKeyValuesVisible() {
+        return this.tree.getKeyValuesVisible();
+    }
 }

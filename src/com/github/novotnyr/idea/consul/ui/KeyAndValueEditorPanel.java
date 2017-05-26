@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -77,10 +76,10 @@ public class KeyAndValueEditorPanel extends JPanel {
         add(new JLabel("Value:"), cColumn1);
 
         JBScrollPane valueScrollPane = new JBScrollPane(this.valueTextArea = new JTextArea());
+        this.valueTextArea.setLineWrap(true);
+        this.valueTextArea.setWrapStyleWord(true);
         valueScrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(valueScrollPane, cColumns2);
-
-        setPreferredSize(new Dimension(300, 150));
     }
 
     private void bindFromModel() {
