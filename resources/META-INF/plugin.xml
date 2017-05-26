@@ -12,7 +12,13 @@
       <p>
       <em>0.3</em>
       <ul>
-        <li></li>
+        <li>UI is rehauled to better conform to IntelliJ tree behaviour.</li>
+        <li>Support usual keyboard shortcuts to create and delete entries</li>
+        <li>Support copy and paste on the entries. If the clipboard contains <code>=</code>-delimited
+        line, you can paste it directly into the Consul tree.
+        </li>
+        <li>Show K/V values next to tree nodes</li>
+        <li>Huge refactoring of tree internals</li>
       </ul>
       </p>
       <p>
