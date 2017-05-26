@@ -1,6 +1,11 @@
 package com.github.novotnyr.idea.consul.tree;
 
 import com.github.novotnyr.idea.consul.Consul;
+import com.github.novotnyr.idea.consul.ConsulException;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.Balloon;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.treeStructure.Tree;
 
 import javax.swing.event.TreeExpansionEvent;
@@ -46,17 +51,39 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
         if(!this.loaded) {
             tree.setPaintBusy(true);
-            loader.setOnDoneListener(treeRoot -> {
-                ConsulTreeModel.this.loaded = true;
-                DefaultTreeModel delegate = ConsulTreeModel.this.delegateModel;
+            loader.setOnDoneListener(new ConsulTreeLoadingWorker.OnDoneListener() {
+                public void onDone(KVNode treeRoot) {
+                    ConsulTreeModel.this.loaded = true;
+                    DefaultTreeModel delegate = ConsulTreeModel.this.delegateModel;
 
-                String treeRootNodeLabel = getTreeRootNodeLabel();
+                    String treeRootNodeLabel = getTreeRootNodeLabel();
 
-                treeRoot.setKeyAndValue(new RootKeyAndValue().withMessage(treeRootNodeLabel));
+                    treeRoot.setKeyAndValue(new RootKeyAndValue().withMessage(treeRootNodeLabel));
 
-                delegate.setRoot(treeRoot);
-                tree.setPaintBusy(false);
+                    delegate.setRoot(treeRoot);
+                    tree.setPaintBusy(false);
+                }
+
+                public void onError(Throwable t) {
+                    ConsulTreeModel.this.loaded = true;
+                    DefaultTreeModel delegate = ConsulTreeModel.this.delegateModel;
+                    delegate.setRoot(new KVNode(new RootKeyAndValue().withMessage("No data!")));
+                    tree.setPaintBusy(false);
+
+                    String message = "Cannot load Consul keys";
+                    if(t instanceof ConsulException) {
+                        message += ": " + t.getMessage();
+                    }
+
+                    JBPopupFactory.getInstance()
+                            .createHtmlTextBalloonBuilder(message, MessageType.ERROR, null)
+                            .setFadeoutTime(7500)
+                            .createBalloon()
+                            .show(RelativePoint.getNorthWestOf(tree),
+                                    Balloon.Position.atRight);
+                }
             });
+
             loader.run();
         }
 

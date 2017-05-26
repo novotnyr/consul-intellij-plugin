@@ -1,7 +1,11 @@
 package com.github.novotnyr.idea.consul.tree;
 
+import com.ecwid.consul.transport.TransportException;
+import com.ecwid.consul.v1.OperationException;
 import com.ecwid.consul.v1.kv.model.GetValue;
 import com.github.novotnyr.idea.consul.Consul;
+import com.github.novotnyr.idea.consul.ConsulAgentConnectionException;
+import com.github.novotnyr.idea.consul.UnauthorizedConsulAccessException;
 import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.SwingWorker;
@@ -22,7 +26,7 @@ public class ConsulTreeLoadingWorker extends SwingWorker<KVNode, Void> {
 
     private String path = "";
 
-    private OnDoneListener onDoneListener = cache -> { /* no-op */};
+    private OnDoneListener onDoneListener = new OnDoneListener() { /* noop */ };
 
     public ConsulTreeLoadingWorker(Consul consul) {
         this.consul = consul;
@@ -57,8 +61,23 @@ public class ConsulTreeLoadingWorker extends SwingWorker<KVNode, Void> {
             KVNode node = get();
             this.onDoneListener.onDone(node);
         } catch (InterruptedException | ExecutionException e) {
-            KVNode errorNode = new KVNode(new RootKeyAndValue().withMessage("No data!"));
-            this.onDoneListener.onDone(errorNode);
+            Throwable cause = e.getCause();
+            if(cause instanceof TransportException) {
+                TransportException transportException = (TransportException) cause;
+                Throwable transportExceptionCause = transportException.getCause();
+                if(transportExceptionCause instanceof java.net.ConnectException) {
+                    this.onDoneListener.onError(new ConsulAgentConnectionException(cause));
+                    return;
+                }
+            }
+            if(cause instanceof OperationException) {
+                OperationException operationException = (OperationException) cause;
+                if(operationException.getStatusCode() == 401) {
+                    this.onDoneListener.onError(new UnauthorizedConsulAccessException(e));
+                    return;
+                }
+            }
+            this.onDoneListener.onError(e.getCause());
         }
     }
 
@@ -122,7 +141,13 @@ public class ConsulTreeLoadingWorker extends SwingWorker<KVNode, Void> {
     }
 
     public interface OnDoneListener {
-        void onDone(KVNode treeNode);
+        default void onDone(KVNode treeNode) {
+
+        }
+
+        default void onError(Throwable t) {
+
+        }
     }
 
 }
