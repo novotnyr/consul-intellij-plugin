@@ -1,6 +1,7 @@
 package com.github.novotnyr.idea.consul.config.ui;
 
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
+import com.intellij.ui.IdeBorderFactory;
 import com.intellij.util.ui.JBUI;
 
 import javax.swing.JLabel;
@@ -30,11 +31,11 @@ public class ConsulHostPanel extends JPanel {
 
     private JTextField aclTokenTextField = new JTextField();
 
-    private JLabel userLabel = new JLabel("HTTP Basic User");
+    private JLabel userLabel = new JLabel("User");
 
     private JTextField userTextField = new JTextField();
 
-    private JLabel passwordLabel = new JLabel("HTTP Basic Password");
+    private JLabel passwordLabel = new JLabel("Password");
 
     private JPasswordField passwordTextField = new JPasswordField();
 
@@ -78,14 +79,25 @@ public class ConsulHostPanel extends JPanel {
         add(this.aclTokenLabel, cLabel);
         add(this.aclTokenTextField, cTextField);
 
-        cLabel.gridy = 4;
-        cTextField.gridy = 4;
+        GridBagConstraints c2Columns = new GridBagConstraints();
+        c2Columns.fill = GridBagConstraints.HORIZONTAL;
+        c2Columns.gridx = 0;
+        c2Columns.gridy = 4;
+        c2Columns.gridwidth = GridBagConstraints.REMAINDER;
+
+        JPanel separatorPanel = new JPanel();
+        separatorPanel.setMaximumSize(new Dimension(0, 0));
+        separatorPanel.setBorder(IdeBorderFactory.createTitledBorder("HTTP Basic", false, JBUI.insets(0)));
+        add(separatorPanel, c2Columns);
+
+        cLabel.gridy = 5;
+        cTextField.gridy = 5;
 
         add(this.userLabel, cLabel);
         add(this.userTextField, cTextField);
 
-        cLabel.gridy = 5;
-        cTextField.gridy = 5;
+        cLabel.gridy = 6;
+        cTextField.gridy = 6;
 
         add(this.passwordLabel, cLabel);
         add(this.passwordTextField, cTextField);
