@@ -114,6 +114,10 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    public ConsulConfiguration get(int index) {
+        return this.configurationList.get(index);
+    }
+
     public void remove(int rowIndex) {
         this.configurationList.remove(rowIndex);
         fireTableDataChanged();

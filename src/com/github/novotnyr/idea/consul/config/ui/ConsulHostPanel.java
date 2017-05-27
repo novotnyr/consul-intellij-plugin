@@ -13,7 +13,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 public class ConsulHostPanel extends JPanel {
-    private ConsulConfiguration consulConfiguration = new ConsulConfiguration();
+    private ConsulConfiguration consulConfiguration;
 
     private JLabel hostLabel = new JLabel("Host");
 
@@ -40,6 +40,12 @@ public class ConsulHostPanel extends JPanel {
     private JPasswordField passwordTextField = new JPasswordField();
 
     public ConsulHostPanel() {
+        this(new ConsulConfiguration());
+    }
+
+    public ConsulHostPanel(ConsulConfiguration consulConfiguration) {
+        this.consulConfiguration = consulConfiguration;
+
         setLayout(new GridBagLayout());
 
         GridBagConstraints cLabel = new GridBagConstraints();
@@ -102,7 +108,18 @@ public class ConsulHostPanel extends JPanel {
         add(this.passwordLabel, cLabel);
         add(this.passwordTextField, cTextField);
 
+        bindFromModel();
+
         setPreferredSize(new Dimension(400, -1));
+    }
+
+    private void bindFromModel() {
+        this.hostTextField.setText(this.consulConfiguration.getHost());
+        this.portTextField.setText(String.valueOf(this.consulConfiguration.getPort()));
+        this.datacenterTextField.setText(this.consulConfiguration.getDatacenter());
+        this.aclTokenTextField.setText(this.consulConfiguration.getAclToken());
+        this.userTextField.setText(this.consulConfiguration.getUser());
+        this.passwordTextField.setText(this.consulConfiguration.getPassword());
     }
 
     public JTextField getHostTextField() {

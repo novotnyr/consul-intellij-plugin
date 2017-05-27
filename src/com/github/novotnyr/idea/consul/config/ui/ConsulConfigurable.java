@@ -6,6 +6,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.AnActionButton;
+import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.Nls;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import java.awt.event.MouseEvent;
 
 public class ConsulConfigurable implements Configurable {
     private JBTable configurationTable;
@@ -39,6 +41,7 @@ public class ConsulConfigurable implements Configurable {
         this.configurationTable = new JBTable(this.configurationTableModel);
         this.configurationTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.configurationTable.setDefaultRenderer(ConsulConfigurationTableModel.Password.class, new ConsulConfigurationTableModel.PasswordTableCellRenderer());
+        installDoubleClickListener(this.configurationTable);
 
         JPanel panelForTable =  ToolbarDecorator.createDecorator(this.configurationTable)
                 .setAddAction(this::onAddAction)
@@ -46,6 +49,29 @@ public class ConsulConfigurable implements Configurable {
                 .disableUpDownActions()
                 .createPanel();
         return panelForTable;
+    }
+
+    private void installDoubleClickListener(JBTable table) {
+        new DoubleClickListener() {
+            @Override
+            protected boolean onDoubleClick(MouseEvent mouseEvent) {
+                onConfigurationTableDoubleClick(mouseEvent);
+                return true;
+            }
+        }.installOn(table);
+    }
+
+    private void onConfigurationTableDoubleClick(MouseEvent mouseEvent) {
+        int selectedRow = this.configurationTable.getSelectedRow();
+        if(selectedRow < 0) {
+            return;
+        }
+        ConsulConfiguration selectecConfiguration = this.configurationTableModel.get(selectedRow);
+        ConsulConfigurationDialog dialog = new ConsulConfigurationDialog(selectecConfiguration);
+        if(dialog.showAndGet()) {
+            ConsulConfiguration consulConfiguration = dialog.getConsulConfiguration();
+            this.configurationTableModel.add(consulConfiguration);
+        }
     }
 
     private void onAddAction(AnActionButton anActionButton) {

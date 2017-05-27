@@ -13,16 +13,29 @@ public class ConsulConfigurationDialog extends DialogWrapper {
 
     private ConsulHostPanel consulHostPanel;
 
+    private ConsulConfiguration consulConfiguration;
+
     protected ConsulConfigurationDialog() {
         super(false);
         init();
         setTitle("Add Consul Host");
     }
 
+    protected ConsulConfigurationDialog(ConsulConfiguration consulConfiguration) {
+        super(false);
+        this.consulConfiguration = consulConfiguration;
+        init();
+        setTitle("Edit Consul Host");
+    }
+
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        return consulHostPanel = new ConsulHostPanel();
+        if (consulConfiguration != null) {
+            return consulHostPanel = new ConsulHostPanel(this.consulConfiguration);
+        } else {
+            return consulHostPanel = new ConsulHostPanel();
+        }
     }
 
     @Nullable
