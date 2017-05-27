@@ -18,6 +18,7 @@
         line, you can paste it directly into the Consul tree.
         </li>
         <li>Show K/V values next to tree nodes</li>
+        <li>Allow editing of Consul nodes</li>
         <li>Huge refactoring of tree internals</li>
       </ul>
       </p>
