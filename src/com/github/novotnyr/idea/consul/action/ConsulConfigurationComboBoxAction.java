@@ -49,7 +49,7 @@ public class ConsulConfigurationComboBoxAction extends AbstractComboBoxAction<Co
 
     private String toString(ConsulConfiguration consulConfiguration) {
         if (consulConfiguration == null) {
-            return "- none -";
+            return "- no Consul configuration -";
         }
         StringBuilder buffer = new StringBuilder()
                 .append(consulConfiguration.getHost())
