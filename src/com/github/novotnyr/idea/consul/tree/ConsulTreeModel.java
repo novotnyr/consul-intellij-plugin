@@ -84,7 +84,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
                 }
             });
 
-            loader.run();
+            loader.execute();
         }
 
         return getDelegateRoot();
