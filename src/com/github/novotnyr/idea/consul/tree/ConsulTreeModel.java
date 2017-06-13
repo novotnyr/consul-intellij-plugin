@@ -51,6 +51,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
         if(!this.loaded) {
             tree.setPaintBusy(true);
+            getDelegateRoot().setKeyAndValue(new RootKeyAndValue().withMessage("Loading " + getTreeRootNodeLabel() + "..."));
             loader.setOnDoneListener(new ConsulTreeLoadingWorker.OnDoneListener() {
                 public void onDone(KVNode treeRoot) {
                     ConsulTreeModel.this.loaded = true;
@@ -92,6 +93,10 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
     private KVNode getDelegateRoot() {
         return (KVNode) this.delegateModel.getRoot();
+    }
+
+    private void setRootLabel(String text) {
+        getDelegateRoot().setKeyAndValue(new RootKeyAndValue().withMessage(text));
     }
 
     @Override
