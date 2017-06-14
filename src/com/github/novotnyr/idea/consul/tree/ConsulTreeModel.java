@@ -51,24 +51,18 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
         if(!this.loaded) {
             tree.setPaintBusy(true);
-            getDelegateRoot().setKeyAndValue(new RootKeyAndValue().withMessage("Loading " + getTreeRootNodeLabel() + "..."));
+            setRootNodeLabel("Loading " + getTreeRootNodeLabel() + "...");
             loader.setOnDoneListener(new ConsulTreeLoadingWorker.OnDoneListener() {
                 public void onDone(KVNode treeRoot) {
                     ConsulTreeModel.this.loaded = true;
-                    DefaultTreeModel delegate = ConsulTreeModel.this.delegateModel;
-
-                    String treeRootNodeLabel = getTreeRootNodeLabel();
-
-                    treeRoot.setKeyAndValue(new RootKeyAndValue().withMessage(treeRootNodeLabel));
-
-                    delegate.setRoot(treeRoot);
+                    setNodeLabel(treeRoot, getTreeRootNodeLabel());
+                    ConsulTreeModel.this.delegateModel.setRoot(treeRoot);
                     tree.setPaintBusy(false);
                 }
 
                 public void onError(Throwable t) {
                     ConsulTreeModel.this.loaded = true;
-                    DefaultTreeModel delegate = ConsulTreeModel.this.delegateModel;
-                    delegate.setRoot(new KVNode(new RootKeyAndValue().withMessage("No data!")));
+                    setRootNodeLabel("No data!");
                     tree.setPaintBusy(false);
 
                     String message = "Cannot load Consul keys";
@@ -91,12 +85,17 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         return getDelegateRoot();
     }
 
-    private KVNode getDelegateRoot() {
-        return (KVNode) this.delegateModel.getRoot();
+    private void setRootNodeLabel(String label) {
+        setNodeLabel(getDelegateRoot(), label);
     }
 
-    private void setRootLabel(String text) {
-        getDelegateRoot().setKeyAndValue(new RootKeyAndValue().withMessage(text));
+    private void setNodeLabel(KVNode node, String label) {
+        node.setKeyAndValue(new RootKeyAndValue().withMessage(label));
+    }
+
+
+    private KVNode getDelegateRoot() {
+        return (KVNode) this.delegateModel.getRoot();
     }
 
     @Override
