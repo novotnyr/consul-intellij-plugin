@@ -75,7 +75,7 @@ public class KeyAndValueEditorPanel extends JPanel {
 
         add(new JLabel("Value:"), cColumn1);
 
-        JBScrollPane valueScrollPane = new JBScrollPane(this.valueTextArea = new JTextArea());
+        JBScrollPane valueScrollPane = new JBScrollPane(this.valueTextArea = new JTextArea(5, 0));
         this.valueTextArea.setLineWrap(true);
         this.valueTextArea.setWrapStyleWord(true);
         valueScrollPane.setBorder(BorderFactory.createEmptyBorder());
