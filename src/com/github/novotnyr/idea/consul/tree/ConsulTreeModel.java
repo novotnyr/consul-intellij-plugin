@@ -24,13 +24,19 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
     private Consul consul;
 
-    private boolean loaded = false;
-
     private OnValueSelectedListener onValueSelectedListener = OnValueSelectedListener.INSTANCE;
 
     private DefaultTreeModel delegateModel;
 
     private KeyAndValue selectedKeyAndValue;
+
+    private State state = State.NEW;
+
+    private enum State {
+        NEW,
+        LOADING,
+        LOADED
+    }
 
     public ConsulTreeModel(Tree tree, Consul consul) {
         this.tree = tree;
@@ -49,19 +55,21 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
     @Override
     public Object getRoot() {
         ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
-        if(!this.loaded) {
+        if(this.state == State.NEW) {
+            this.state = State.LOADING;
             tree.setPaintBusy(true);
             setRootNodeLabel("Loading " + getTreeRootNodeLabel() + "...");
             loader.setOnDoneListener(new ConsulTreeLoadingWorker.OnDoneListener() {
                 public void onDone(KVNode treeRoot) {
-                    ConsulTreeModel.this.loaded = true;
                     setNodeLabel(treeRoot, getTreeRootNodeLabel());
                     ConsulTreeModel.this.delegateModel.setRoot(treeRoot);
                     tree.setPaintBusy(false);
+
+                    ConsulTreeModel.this.state = State.LOADED;
                 }
 
                 public void onError(Throwable t) {
-                    ConsulTreeModel.this.loaded = true;
+                    ConsulTreeModel.this.state = State.LOADED;
                     setRootNodeLabel("No data!");
                     tree.setPaintBusy(false);
 
