@@ -69,8 +69,7 @@ public class ConsulConfigurable implements Configurable {
         ConsulConfiguration selectecConfiguration = this.configurationTableModel.get(selectedRow);
         ConsulConfigurationDialog dialog = new ConsulConfigurationDialog(selectecConfiguration);
         if(dialog.showAndGet()) {
-            ConsulConfiguration consulConfiguration = dialog.getConsulConfiguration();
-            this.configurationTableModel.add(consulConfiguration);
+            this.configurationTableModel.fireTableDataChanged();
         }
     }
 

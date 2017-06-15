@@ -128,6 +128,10 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         this.configurationList.addAll(configurations);
     }
 
+    public void refresh() {
+        this.fireTableDataChanged();
+    }
+
     public static class Password {
         private String password;
 

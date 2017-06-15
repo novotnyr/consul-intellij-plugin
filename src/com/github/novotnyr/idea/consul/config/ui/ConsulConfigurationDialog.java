@@ -18,6 +18,7 @@ public class ConsulConfigurationDialog extends DialogWrapper {
     protected ConsulConfigurationDialog() {
         super(false);
         init();
+        this.consulConfiguration = new ConsulConfiguration();
         setTitle("Add Consul Host");
     }
 
@@ -65,17 +66,16 @@ public class ConsulConfigurationDialog extends DialogWrapper {
     }
 
     public ConsulConfiguration getConsulConfiguration() {
-        ConsulConfiguration consulConfiguration = new ConsulConfiguration();
         ConsulHostPanel p = this.consulHostPanel;
-        consulConfiguration.setHost(p.getHostTextField().getText());
-        consulConfiguration.setPort(Integer.parseInt(p.getPortTextField().getText()));
+        this.consulConfiguration.setHost(p.getHostTextField().getText());
+        this.consulConfiguration.setPort(Integer.parseInt(p.getPortTextField().getText()));
 
-        consulConfiguration.setAclToken(getValue(p.getAclTokenTextField()));
-        consulConfiguration.setDatacenter(getValue(p.getDatacenterTextField()));
-        consulConfiguration.setUser(getValue(p.getUserTextField()));
-        consulConfiguration.setPassword(getValue(p.getPasswordTextField()));
+        this.consulConfiguration.setAclToken(getValue(p.getAclTokenTextField()));
+        this.consulConfiguration.setDatacenter(getValue(p.getDatacenterTextField()));
+        this.consulConfiguration.setUser(getValue(p.getUserTextField()));
+        this.consulConfiguration.setPassword(getValue(p.getPasswordTextField()));
 
-        return consulConfiguration;
+        return this.consulConfiguration;
     }
 
     private String getValue(JTextField textField) {
