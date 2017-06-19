@@ -1,5 +1,6 @@
 package com.github.novotnyr.idea.consul.tree;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.CopyProvider;
 import com.intellij.ide.PasteProvider;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -24,6 +25,7 @@ public class ConsulTree extends Tree implements DataProvider, PasteProvider, Cop
         setCellRenderer(new ColoredTreeCellRenderer() {
             @Override
             public void customizeCellRenderer(@NotNull JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                setIcon(value);
                 if(! keyValuesVisible) {
                     defaultRender(tree, value, selected, expanded, leaf, row, hasFocus);
                     return;
@@ -46,11 +48,23 @@ public class ConsulTree extends Tree implements DataProvider, PasteProvider, Cop
                 }
             }
 
+            private void setIcon(Object value) {
+                if(isContainer(value)) {
+                    this.setIcon(AllIcons.Nodes.Folder);
+                } else {
+                    this.setIcon(AllIcons.FileTypes.Any_type);
+                }
+            }
+
             private void defaultRender(@NotNull JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
                 String text = tree.convertValueToText(value, selected, expanded, leaf, row, hasFocus);
                 append(text);
             }
         });
+    }
+
+    private boolean isContainer(Object value) {
+        return (value instanceof KVNode) && ((KVNode) value).getKeyAndValue().isContainer();
     }
 
     public ConsulTreeModel getConsulTreeModel() {
