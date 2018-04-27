@@ -10,6 +10,14 @@
 
   <change-notes><![CDATA[
       <p>
+      <em>0.4</em>
+      <ul>
+        <li>Improve tree-loading performance</li>
+        <li>Properly handle special characters in key names</li>
+        <li>Fix inability to edit Consul host configurations</li>
+      </ul>
+      </p>
+      <p>
       <em>0.3</em>
       <ul>
         <li>UI is rehauled to better conform to IntelliJ tree behaviour.</li>
