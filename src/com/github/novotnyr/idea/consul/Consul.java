@@ -7,7 +7,11 @@ import com.ecwid.consul.v1.kv.model.GetValue;
 import com.ecwid.consul.v1.kv.model.PutParams;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class Consul {
 
@@ -31,7 +35,7 @@ public class Consul {
     }
 
     public void insert(String fqnKey, String value) {
-        getConsulClient().setKVValue(fqnKey, value, configuration.getAclToken(), EMPTY_PUT_PARAMS, getQueryParams());
+        setKVValue(fqnKey, value);
     }
 
     public void mkdir(String path) {
@@ -40,19 +44,46 @@ public class Consul {
             // by convention, keys ending with / denote a folder
             folderName = path + "/";
         }
-        getConsulClient().setKVValue(folderName, "", configuration.getAclToken(), EMPTY_PUT_PARAMS, getQueryParams());
+        setKVValue(folderName, "");
     }
 
     public void delete(String fullyQualifiedKey) {
         if(fullyQualifiedKey.endsWith("/")) {
-            getConsulClient().deleteKVValues(fullyQualifiedKey, configuration.getAclToken(), getQueryParams());
+            getConsulClient().deleteKVValues(sanitizeKey(fullyQualifiedKey), configuration.getAclToken(), getQueryParams());
         } else {
-            getConsulClient().deleteKVValue(fullyQualifiedKey, configuration.getAclToken(), getQueryParams());
+            getConsulClient().deleteKVValue(sanitizeKey(fullyQualifiedKey), configuration.getAclToken(), getQueryParams());
         }
     }
 
     public void update(String fullyQualifiedKey, String value) {
-        getConsulClient().setKVValue(fullyQualifiedKey, value, configuration.getAclToken(), EMPTY_PUT_PARAMS, getQueryParams());
+        setKVValue(fullyQualifiedKey, value);
+    }
+
+    protected void setKVValue(String fullyQualifiedKey, String value) {
+        getConsulClient().setKVValue(sanitizeKey(fullyQualifiedKey), value, configuration.getAclToken(), EMPTY_PUT_PARAMS, getQueryParams());
+    }
+
+    protected String sanitizeKey(String key) {
+        StringBuilder result = new StringBuilder();
+        StringTokenizer tokenizer = new StringTokenizer(key, "/");
+        while (tokenizer.hasMoreElements()) {
+            String urlEncodedToken = urlEncode(tokenizer.nextToken());
+            if (result.length() == 0) {
+                result.append(urlEncodedToken);
+            } else {
+                result.append("/").append(urlEncodedToken);
+            }
+        }
+        return result.toString();
+    }
+
+    protected String urlEncode(String key) {
+        try {
+            return URLEncoder.encode(key, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            // generally, this should never happen
+            throw new IllegalStateException("Unsupported encoding", e);
+        }
     }
 
     public void setConfiguration(ConsulConfiguration configuration) {
