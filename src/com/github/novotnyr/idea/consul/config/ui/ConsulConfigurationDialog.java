@@ -65,6 +65,13 @@ public class ConsulConfigurationDialog extends DialogWrapper {
         }
     }
 
+    @Override
+    protected void doOKAction() {
+        getConsulConfiguration();
+
+        super.doOKAction();
+    }
+
     public ConsulConfiguration getConsulConfiguration() {
         ConsulHostPanel p = this.consulHostPanel;
         this.consulConfiguration.setHost(p.getHostTextField().getText());
