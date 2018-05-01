@@ -115,7 +115,7 @@ public class KeyAndValuePanel extends JPanel {
     public class SubmitChangesAction extends AnAction {
 
         public SubmitChangesAction() {
-            super("Submit changes", "Submit a new value", AllIcons.Actions.Upload);
+            super("Submit changes", "Submit a new value", AllIcons.Actions.Menu_saveall);
         }
 
         @Override

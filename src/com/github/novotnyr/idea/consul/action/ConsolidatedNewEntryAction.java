@@ -28,7 +28,7 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
 
     @Override
     public void run(AnActionButton button) {
-        JBList<NewEntryType> list = new JBList<>(NewEntryType.ITEM, NewEntryType.FOLDER);
+        JBList list = new JBList(NewEntryType.ITEM, NewEntryType.FOLDER);
         JBPopup popup = JBPopupFactory.getInstance()
                 .createListPopupBuilder(list)
                 .setItemChoosenCallback(() -> onPopupListItemChoosenCallback(list))
@@ -51,8 +51,9 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
         }
     }
 
-    private void onPopupListItemChoosenCallback(JBList<NewEntryType> list) {
-        switch (list.getSelectedValue()) {
+    private void onPopupListItemChoosenCallback(JBList list) {
+        NewEntryType selectedValue = (NewEntryType) list.getSelectedValue();
+        switch (selectedValue) {
             case FOLDER:
                 newFolderAction.run(null);
                 return;

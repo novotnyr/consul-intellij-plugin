@@ -95,4 +95,20 @@ public class ConsulConfigurable implements Configurable {
     public void apply() throws ConfigurationException {
         this.consulConfigurationPersistentService.setConsulConfigurationList(this.configurationTableModel.getConfigurationList());
     }
+
+    @Nullable
+    @Override
+    public String getHelpTopic() {
+        return null;
+    }
+
+    @Override
+    public void disposeUIResources() {
+        // do nothing
+    }
+
+    @Override
+    public void reset() {
+        // do nothing
+    }
 }

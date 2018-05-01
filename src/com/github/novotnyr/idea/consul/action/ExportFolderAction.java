@@ -8,14 +8,14 @@ import com.github.novotnyr.idea.consul.tree.TreeUtils;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Consumer;
-import com.intellij.util.ThrowableRunnable;
 import com.intellij.util.messages.MessageBus;
 
 import java.nio.charset.Charset;
@@ -36,14 +36,17 @@ public class ExportFolderAction extends AbstractEntryAction {
             @Override
             public void consume(VirtualFile virtualFile) {
                 try {
-                    WriteAction.run(new ThrowableRunnable<Throwable>() {
+                    ThrowableComputable<Void, Throwable> saveAction = new ThrowableComputable<Void, Throwable>() {
                         @Override
-                        public void run() throws Throwable {
+                        public Void compute() throws Throwable {
                             VirtualFile childData = virtualFile.findOrCreateChildData(this, selectedKeyAndValue.getKey() + ".properties");
                             childData.setBinaryContent(export(node));
-                        }
-                    });
 
+                            return null;
+                        }
+                    };
+
+                    WriteCommandAction.runWriteCommandAction(getProject(event), saveAction);
                 } catch (Throwable e) {
                     // TODO fixme
                     e.printStackTrace();
