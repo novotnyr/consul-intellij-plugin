@@ -2,10 +2,19 @@
   <id>com.github.novotnyr.consul-intellij-plugin</id>
   <name>Consul K/V Support</name>
   <version>0.5</version>
-  <vendor url="https://github.com/novotnyr/consul-intellij-plugin">Robert Novotny</vendor>
+  <vendor url="https://github.com/novotnyr/consul-intellij-plugin">Róbert Novotný</vendor>
 
   <description><![CDATA[
-      Consul K/V support plugin.
+      <b><i>Consul by Hashicorp</i> Key/Value browser and editor</b>
+      <p>See <a href="https://www.consul.io/">Consul.io</a> for further details.</p>
+      <p>This is an unofficial plug-in, not affiliated with Hashicorp.</p>
+      <ul>
+            <li>Browse Consul K/V repository. Add, edit and remove entries and folders.</li>
+            <li>Define multiple Consul instances and easily switch between them</li>
+            <li>Export the contents of a Consul folder to the <code>.properties</code> file</li>
+            <li>Paste values like <code>version=1</code> directly from the Clipboard to the Consul tree
+            <li>Copy values to the Clipboard in the <code>=</code>-delimited format</li>
+      </ul>
     ]]></description>
 
   <change-notes><![CDATA[
