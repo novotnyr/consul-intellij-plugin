@@ -1,5 +1,6 @@
 package com.github.novotnyr.idea.consul.tree;
 
+import com.github.novotnyr.idea.consul.util.ClipboardKeyAndValueParser;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.CopyProvider;
 import com.intellij.ide.PasteProvider;
@@ -93,12 +94,12 @@ public class ConsulTree extends Tree implements DataProvider, PasteProvider, Cop
         if (clipboardContents == null) {
             return;
         }
-        String[] split = clipboardContents.split("=", 2);
         KeyAndValue selectedKeyAndValue = getSelectedKeyAndValue();
-        KeyAndValue newKeyAndValue = new KeyAndValue(selectedKeyAndValue.getFullyQualifiedKey() + split[0], split[1]);
-
-        getConsulTreeModel().addNode(selectedKeyAndValue, newKeyAndValue);
-        getConsulTreeModel().getConsul().insert(newKeyAndValue.getFullyQualifiedKey(), newKeyAndValue.getValue());
+        ClipboardKeyAndValueParser clipboardParser = new ClipboardKeyAndValueParser(selectedKeyAndValue);
+        for (KeyAndValue pastedKv : clipboardParser.parseClipboard(clipboardContents)) {
+            getConsulTreeModel().addNode(selectedKeyAndValue, pastedKv);
+            getConsulTreeModel().getConsul().insert(pastedKv.getFullyQualifiedKey(), pastedKv.getValue());
+        }
     }
 
     protected KeyAndValue getSelectedKeyAndValue() {
