@@ -31,6 +31,7 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
         JBList list = new JBList(NewEntryType.ITEM, NewEntryType.FOLDER);
         JBPopup popup = JBPopupFactory.getInstance()
                 .createListPopupBuilder(list)
+                .setTitle("Create New")
                 .setItemChoosenCallback(() -> onPopupListItemChoosenCallback(list))
                 .createPopup();
 
