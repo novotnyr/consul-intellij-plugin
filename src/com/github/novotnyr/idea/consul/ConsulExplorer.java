@@ -23,6 +23,7 @@ import com.intellij.ui.AnActionButton;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.ui.JBUI;
@@ -86,6 +87,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         initializeTreeModel();
         bindTreeModel();
         TreeUtil.installActions(tree);
+        new TreeSpeedSearch(this.tree);
 
         this.newFolderAction = new NewFolderActionButton(this.consul);
         this.newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction(this.consul), this.newFolderAction, tree, this.consul);
