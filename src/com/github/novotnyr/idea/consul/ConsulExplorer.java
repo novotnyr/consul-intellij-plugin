@@ -13,6 +13,9 @@ import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
+import com.intellij.ide.CommonActionsManager;
+import com.intellij.ide.DefaultTreeExpander;
+import com.intellij.ide.TreeExpander;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -53,6 +56,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
 
     private ConsulTreeModel treeModel;
 
+    private TreeExpander treeExpander;
+
     private KeyAndValuePanel keyAndValuePanel;
 
     private RefreshTreeAction refreshTreeAction;
@@ -88,6 +93,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
         bindTreeModel();
         TreeUtil.installActions(tree);
         new TreeSpeedSearch(this.tree);
+        this.treeExpander = new DefaultTreeExpander(this.tree);
 
         this.newFolderAction = new NewFolderActionButton(this.consul);
         this.newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction(this.consul), this.newFolderAction, tree, this.consul);
@@ -100,6 +106,10 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
                 .setRemoveAction(this.deleteEntryAction)
                 .setRemoveActionUpdater(this.deleteEntryAction)
                 .addExtraAction(AnActionButton.fromAction(this.exportFolderAction))
+                .addExtraAction(AnActionButton.fromAction(CommonActionsManager.getInstance()
+                        .createExpandAllAction(this.treeExpander)))
+                .addExtraAction(AnActionButton.fromAction(CommonActionsManager.getInstance()
+                        .createCollapseAllAction(this.treeExpander)))
                 .createPanel();
 
 
