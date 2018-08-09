@@ -19,6 +19,14 @@
 
   <change-notes><![CDATA[
       <p>
+      <em>0.5</em>
+      <ul>
+        <li>Enable speedsearch and Expand/Collapse buttons on the K/V tree</li>
+        <li>Enable Clipboard paste for multiple entries</li>
+        <li>Reenable compatibility with older IntelliJ versions</li>
+      </ul>
+      </p>
+      <p>
       <em>0.4</em>
       <ul>
         <li>Improve tree-loading performance</li>
