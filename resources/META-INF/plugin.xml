@@ -19,6 +19,13 @@
 
   <change-notes><![CDATA[
       <p>
+      <em>0.6</em>
+      <ul>
+        <li>Enable compatibility with non-IDEA products (PhpStorm, DataGrip etc).</li>
+        <li>Minor UI improvements</li>
+      </ul>
+      </p>
+      <p>
       <em>0.5</em>
       <ul>
         <li>Enable speedsearch and Expand/Collapse buttons on the K/V tree</li>
