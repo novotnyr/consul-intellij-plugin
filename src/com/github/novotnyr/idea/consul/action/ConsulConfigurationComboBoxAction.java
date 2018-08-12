@@ -3,7 +3,7 @@ package com.github.novotnyr.idea.consul.action;
 import com.github.novotnyr.idea.consul.Topics;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.config.ConsulConfigurationPersistentService;
-import com.intellij.designer.actions.AbstractComboBoxAction;
+import com.github.novotnyr.idea.consul.ui.AbstractComboBoxAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.components.ServiceManager;
