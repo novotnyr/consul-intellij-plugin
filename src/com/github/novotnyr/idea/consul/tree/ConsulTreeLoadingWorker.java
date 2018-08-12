@@ -72,7 +72,7 @@ public class ConsulTreeLoadingWorker extends SwingWorker<KVNode, Void> {
             }
             if(cause instanceof OperationException) {
                 OperationException operationException = (OperationException) cause;
-                if(operationException.getStatusCode() == 401) {
+                if(operationException.getStatusCode() == 401 || operationException.getStatusCode() == 403) {
                     this.onDoneListener.onError(new UnauthorizedConsulAccessException(e));
                     return;
                 }
