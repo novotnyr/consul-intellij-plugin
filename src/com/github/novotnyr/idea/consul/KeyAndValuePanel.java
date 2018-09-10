@@ -4,6 +4,8 @@ import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.github.novotnyr.idea.consul.ui.BottomToolWindowPanel;
 import com.github.novotnyr.idea.consul.ui.FolderContentsTablePanel;
+import com.github.novotnyr.idea.consul.ui.UnsynchronizedChangesLabelAction;
+import com.github.novotnyr.idea.consul.ui.event.IgnorableDocumentAdapter;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -22,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 
@@ -41,6 +44,10 @@ public class KeyAndValuePanel extends JPanel {
     private final JPanel middlePanel;
 
     private SubmitChangesAction submitChangesAction;
+
+    private UnsynchronizedChangesLabelAction unsynchronizedChangesLabel;
+
+    private IgnorableDocumentAdapter valueTextAreaDocumentListener;
 
     private Mode viewMode;
 
@@ -64,9 +71,20 @@ public class KeyAndValuePanel extends JPanel {
         this.middlePanel.add(getFolderContentPane(), Mode.FOLDER.name());
 
         add(this.middlePanel, BorderLayout.CENTER);
+
+        this.messageBus.connect().subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED,
+                keyAndValue -> this.unsynchronizedChangesLabel.hideText()
+        );
     }
 
     private JComponent getValuePane() {
+        this.valueTextAreaDocumentListener = new IgnorableDocumentAdapter() {
+            @Override
+            protected void doTextChanged(DocumentEvent documentEvent) {
+                KeyAndValuePanel.this.unsynchronizedChangesLabel.showText();
+            }
+        };
+        this.valueTextArea.getDocument().addDocumentListener(this.valueTextAreaDocumentListener);
         this.valueTextArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         JBScrollPane scrollPane = new JBScrollPane(this.valueTextArea, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -88,6 +106,7 @@ public class KeyAndValuePanel extends JPanel {
     private DefaultActionGroup createToolbarActionGroup() {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(this.submitChangesAction = new SubmitChangesAction());
+        group.add(this.unsynchronizedChangesLabel = new UnsynchronizedChangesLabelAction());
 
         return group;
     }
@@ -107,7 +126,9 @@ public class KeyAndValuePanel extends JPanel {
             this.folderContentsTablePanel.refresh(this.consulTree, this.keyAndValue);
             cardLayout.show(this.middlePanel, Mode.FOLDER.name());
         } else {
+            this.valueTextAreaDocumentListener.disableEventHandling();
             this.valueTextArea.setText(keyAndValue.getValue());
+            this.valueTextAreaDocumentListener.enableEventHandling();
             cardLayout.show(this.middlePanel, Mode.ENTRY.name());
         }
     }
