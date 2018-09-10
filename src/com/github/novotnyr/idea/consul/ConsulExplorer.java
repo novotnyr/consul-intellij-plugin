@@ -187,6 +187,9 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
     private void treeValueSelected(KeyAndValue kv) {
         this.keyAndValuePanel.setKeyAndValue(kv);
         this.updateEntryAction.isEnabled(this.tree);
+
+        this.messageBus.syncPublisher(Topics.ConsulTreeSelectionChanged.CONSUL_TREE_SELECTION_CHANGED)
+                .consulTreeSelectionChanged(kv);
     }
 
     public void refresh() {

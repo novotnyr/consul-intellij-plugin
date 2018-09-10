@@ -15,6 +15,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.messages.MessageBus;
+import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.BorderFactory;
@@ -72,7 +73,11 @@ public class KeyAndValuePanel extends JPanel {
 
         add(this.middlePanel, BorderLayout.CENTER);
 
-        this.messageBus.connect().subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED,
+        MessageBusConnection messageBusConnection = this.messageBus.connect();
+        messageBusConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED,
+                keyAndValue -> this.unsynchronizedChangesLabel.hideText()
+        );
+        messageBusConnection.subscribe(Topics.ConsulTreeSelectionChanged.CONSUL_TREE_SELECTION_CHANGED,
                 keyAndValue -> this.unsynchronizedChangesLabel.hideText()
         );
     }

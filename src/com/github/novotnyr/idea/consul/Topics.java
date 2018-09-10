@@ -23,4 +23,10 @@ public class Topics {
 
         void keyValueChanged(KeyAndValue changedKeyAndValue);
     }
+
+    public interface ConsulTreeSelectionChanged {
+        Topic<ConsulTreeSelectionChanged> CONSUL_TREE_SELECTION_CHANGED = Topic.create("Consul Tree Selection Changed", ConsulTreeSelectionChanged.class);
+
+        void consulTreeSelectionChanged(KeyAndValue changedKeyAndValue);
+    }
 }
