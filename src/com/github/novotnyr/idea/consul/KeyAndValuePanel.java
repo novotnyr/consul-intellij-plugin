@@ -75,10 +75,16 @@ public class KeyAndValuePanel extends JPanel {
 
         MessageBusConnection messageBusConnection = this.messageBus.connect();
         messageBusConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED,
-                keyAndValue -> this.unsynchronizedChangesLabel.hideText()
+                keyAndValue -> {
+                    this.unsynchronizedChangesLabel.hideText();
+                    KeyAndValuePanel.this.submitChangesAction.setEnabled(false);
+                }
         );
         messageBusConnection.subscribe(Topics.ConsulTreeSelectionChanged.CONSUL_TREE_SELECTION_CHANGED,
-                keyAndValue -> this.unsynchronizedChangesLabel.hideText()
+                keyAndValue -> {
+                    this.unsynchronizedChangesLabel.hideText();
+                    KeyAndValuePanel.this.submitChangesAction.setEnabled(false);
+                }
         );
     }
 
@@ -86,6 +92,7 @@ public class KeyAndValuePanel extends JPanel {
         this.valueTextAreaDocumentListener = new IgnorableDocumentAdapter() {
             @Override
             protected void doTextChanged(DocumentEvent documentEvent) {
+                KeyAndValuePanel.this.submitChangesAction.setEnabled(true);
                 KeyAndValuePanel.this.unsynchronizedChangesLabel.showText();
             }
         };
@@ -139,6 +146,7 @@ public class KeyAndValuePanel extends JPanel {
     }
 
     public class SubmitChangesAction extends AnAction {
+        private boolean enabled;
 
         public SubmitChangesAction() {
             super("Submit changes", "Submit a new value", AllIcons.Actions.Menu_saveall);
@@ -149,6 +157,15 @@ public class KeyAndValuePanel extends JPanel {
             KeyAndValuePanel.this.messageBus
                     .syncPublisher(Topics.KeyValueChanged.KEY_VALUE_CHANGED)
                     .keyValueChanged(new KeyAndValue(KeyAndValuePanel.this.fqnKeyLabel.getText(), KeyAndValuePanel.this.valueTextArea.getText()));
+        }
+
+        @Override
+        public void update(AnActionEvent e) {
+            e.getPresentation().setEnabled(this.enabled);
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
     }
 
