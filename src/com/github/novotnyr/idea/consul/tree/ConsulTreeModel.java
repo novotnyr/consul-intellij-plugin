@@ -26,6 +26,8 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
     private OnValueSelectedListener onValueSelectedListener = OnValueSelectedListener.INSTANCE;
 
+    private TreeModelLoadingListener treeModelLoadingListener = TreeModelLoadingListener.INSTANCE;
+
     private DefaultTreeModel delegateModel;
 
     private KeyAndValue selectedKeyAndValue;
@@ -57,6 +59,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
         if(this.state == State.NEW) {
             this.state = State.LOADING;
+            this.treeModelLoadingListener.onBeforeTreeModelLoading();
             tree.setPaintBusy(true);
             setRootNodeLabel("Loading " + getTreeRootNodeLabel() + "...");
             loader.setOnDoneListener(new ConsulTreeLoadingWorker.OnDoneListener() {
@@ -66,6 +69,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
                     tree.setPaintBusy(false);
 
                     ConsulTreeModel.this.state = State.LOADED;
+                    ConsulTreeModel.this.treeModelLoadingListener.onTreeModelSuccessfullyLoadedListener();
                 }
 
                 public void onError(Throwable t) {
@@ -158,6 +162,10 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         this.onValueSelectedListener = onValueSelectedListener;
     }
 
+    public void setTreeModelLoadingListener(TreeModelLoadingListener treeModelLoadingListener) {
+        this.treeModelLoadingListener = treeModelLoadingListener;
+    }
+
     public KVNode getNode(KeyAndValue keyAndValue) {
         if (keyAndValue instanceof RootKeyAndValue) {
             return getDelegateRoot();
@@ -224,6 +232,24 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         OnValueSelectedListener INSTANCE = (kv) -> {};
 
         void onValueSelected(KeyAndValue kv);
+    }
+
+    public interface TreeModelLoadingListener {
+        TreeModelLoadingListener INSTANCE = new TreeModelLoadingListener() {
+            @Override
+            public void onBeforeTreeModelLoading() {
+
+            }
+
+            @Override
+            public void onTreeModelSuccessfullyLoadedListener() {
+
+            }
+        };
+
+        void onBeforeTreeModelLoading();
+
+        void onTreeModelSuccessfullyLoadedListener();
     }
 
 

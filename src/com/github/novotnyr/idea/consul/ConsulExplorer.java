@@ -13,6 +13,7 @@ import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
+import com.github.novotnyr.idea.consul.tree.TreeUtils;
 import com.intellij.ide.CommonActionsManager;
 import com.intellij.ide.DefaultTreeExpander;
 import com.intellij.ide.TreeExpander;
@@ -34,9 +35,10 @@ import com.intellij.util.ui.tree.TreeUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable {
+public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable, ConsulTreeModel.TreeModelLoadingListener {
 
     private Consul consul;
 
@@ -178,6 +180,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
     private void initializeTreeModel() {
         treeModel = new ConsulTreeModel(tree, this.consul);
         treeModel.setOnValueSelectedListener(this::treeValueSelected);
+        treeModel.setTreeModelLoadingListener(this);
         tree.setModel(treeModel);
         tree.addTreeWillExpandListener(this.treeModel);
         tree.addTreeSelectionListener(this.treeModel);
@@ -193,6 +196,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
     }
 
     public void refresh() {
+        this.selectionPath = this.tree.getSelectionPath();
         initializeTreeModel();
     }
 
@@ -202,5 +206,18 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable 
 
     public boolean getKeyValuesVisible() {
         return this.tree.getKeyValuesVisible();
+    }
+
+    private TreePath selectionPath;
+
+    @Override
+    public void onBeforeTreeModelLoading() {
+    }
+
+    @Override
+    public void onTreeModelSuccessfullyLoadedListener() {
+        if (this.selectionPath != null) {
+            TreeUtils.expandConsulTree(this.tree, TreeUtils.removeHead(this.selectionPath));
+        }
     }
 }
