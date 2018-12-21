@@ -74,7 +74,18 @@ public class Consul {
                 result.append("/").append(urlEncodedToken);
             }
         }
+        if (endsWithSlash(key) && !endsWithSlash(result)) {
+            result.append('/');
+        }
         return result.toString();
+    }
+
+    private boolean endsWithSlash(CharSequence sequence) {
+        if (sequence.length() == 0) {
+            return false;
+        }
+        char suffix = sequence.charAt(sequence.length() - 1);
+        return suffix == '/';
     }
 
     protected String urlEncode(String key) {
