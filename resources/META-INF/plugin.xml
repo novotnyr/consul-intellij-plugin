@@ -19,6 +19,14 @@
 
   <change-notes><![CDATA[
       <p>
+      <em>0.7</em>
+      <ul>
+        <li>Require at least IDE levels 2017.1</li>
+        <li>Indicate unsaved changes in node values when editing manually</li>
+        <li>Resolve compatibility between various IDE versions
+      </ul>
+      </p>
+      <p>
       <em>0.6</em>
       <ul>
         <li>Enable compatibility with non-IDEA products (PhpStorm, DataGrip etc).</li>
