@@ -1,9 +1,12 @@
 package com.github.novotnyr.idea.consul.config.ui;
 
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
+import com.intellij.icons.AllIcons;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -60,7 +63,7 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         Column column = COLUMNS.get(columnIndex);
         switch (column) {
             case HOST:
-                return consulConfiguration.getHost();
+                return new Host(consulConfiguration);
             case PORT:
                 return consulConfiguration.getPort();
             case ACL_TOKEN:
@@ -88,7 +91,7 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         Column column = COLUMNS.get(columnIndex);
         switch (column) {
             case HOST:
-                return String.class;
+                return Host.class;
             case PORT:
                 return Integer.class;
             case ACL_TOKEN:
@@ -153,6 +156,25 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         }
     }
 
+    public static class Host {
+        private String host;
+
+        private boolean usingTls;
+
+        public Host(ConsulConfiguration consulConfiguration) {
+            this.host = consulConfiguration.getHost();
+            this.usingTls = consulConfiguration.isUsingTls();
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public boolean isUsingTls() {
+            return usingTls;
+        }
+    }
+
     public static class PasswordTableCellRenderer implements TableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -161,6 +183,20 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
             return table.getDefaultRenderer(Boolean.class)
                     .getTableCellRendererComponent(table, hasPassword, isSelected, hasFocus, row, column);
         }
+    }
 
+    public static class HostTableCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Host consulHost = (Host) value;
+            JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            label.setText(consulHost.getHost());
+            if (consulHost.isUsingTls()) {
+                label.setIcon(AllIcons.Nodes.Padlock);
+            } else {
+                label.setIcon(null);
+            }
+            return label;
+        }
     }
 }
