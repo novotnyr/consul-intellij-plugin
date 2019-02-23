@@ -9,6 +9,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 
 public class ConsulClientProvider {
     private ConsulConfiguration configuration;
@@ -36,6 +37,7 @@ public class ConsulClientProvider {
 
         AbstractHttpClient httpClient = new DefaultHttpClient();
         httpClient.setCredentialsProvider(provider);
+        httpClient.setRedirectStrategy(new LaxRedirectStrategy());
 
         return new ConsulRawClient(this.configuration.getHost(), this.configuration.getPort(), httpClient);
     }
