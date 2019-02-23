@@ -34,14 +34,4 @@ public class ConsulConfigurationPersistentService implements PersistentStateComp
     public List<ConsulConfiguration> getConsulConfigurationList() {
         return this.state.consulConfigurationList;
     }
-
-    protected ConsulConfiguration parse(String definition) {
-        try {
-            String[] split = definition.split("\\|");
-            return new ConsulConfiguration(split[0], Integer.parseInt(split[1]));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }
