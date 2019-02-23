@@ -39,7 +39,14 @@ public class ConsulClientProvider {
         httpClient.setCredentialsProvider(provider);
         httpClient.setRedirectStrategy(new LaxRedirectStrategy());
 
-        return new ConsulRawClient(this.configuration.getHost(), this.configuration.getPort(), httpClient);
+        return new ConsulRawClient(getHost(), this.configuration.getPort(), httpClient);
+    }
+
+    private String getHost() {
+        if (this.configuration.isUsingTls()) {
+            return "https://" + this.configuration.getHost();
+        }
+        return this.configuration.getHost();
     }
 
     private CredentialsProvider getCredentialsProvider() {
