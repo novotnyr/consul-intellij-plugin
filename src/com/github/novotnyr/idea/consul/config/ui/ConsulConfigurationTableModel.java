@@ -18,6 +18,7 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         PORT("Port"),
         ACL_TOKEN("ACL Token"),
         DATACENTER("Datacenter"),
+        TLS("TLS"),
         USER("User"),
         PASSWORD("Password");
 
@@ -66,6 +67,8 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
                 return consulConfiguration.getAclToken();
             case DATACENTER:
                 return consulConfiguration.getDatacenter();
+            case TLS:
+                return consulConfiguration.isUsingTls();
             case USER:
                 return consulConfiguration.getUser();
             case PASSWORD:
@@ -92,6 +95,8 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
                 return String.class;
             case DATACENTER:
                 return String.class;
+            case TLS:
+                return Boolean.class;
             case USER:
                 return String.class;
             case PASSWORD:
