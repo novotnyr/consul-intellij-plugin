@@ -5,21 +5,31 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class ConsulConfigurationDialog extends DialogWrapper {
 
-    private ConsulHostPanel consulHostPanel;
-
     private ConsulConfiguration consulConfiguration;
+
+    private JTextField hostTextField;
+    private JTextField portTextField;
+    private JTextField dataCenterTextField;
+    private JTextField aclTokenTextField;
+    private JTextField httpBasicUserTextField;
+    private JTextField httpBasicPasswordTextField;
+    private JCheckBox useTlsCheckBox;
+    private JPanel rootPanel;
 
     protected ConsulConfigurationDialog() {
         super(false);
         init();
         this.consulConfiguration = new ConsulConfiguration();
         setTitle("Add Consul Host");
+        bindFromModel();
     }
 
     protected ConsulConfigurationDialog(ConsulConfiguration consulConfiguration) {
@@ -27,29 +37,26 @@ public class ConsulConfigurationDialog extends DialogWrapper {
         this.consulConfiguration = consulConfiguration;
         init();
         setTitle("Edit Consul Host");
+        bindFromModel();
     }
 
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        if (consulConfiguration != null) {
-            return consulHostPanel = new ConsulHostPanel(this.consulConfiguration);
-        } else {
-            return consulHostPanel = new ConsulHostPanel();
-        }
+        return this.rootPanel;
     }
 
     @Nullable
     @Override
     protected ValidationInfo doValidate() {
-        if(this.consulHostPanel.getHostTextField().getText().isEmpty()) {
-            return new ValidationInfo("Host cannot be empty", this.consulHostPanel.getHostTextField());
+        if(this.hostTextField.getText().isEmpty()) {
+            return new ValidationInfo("Host cannot be empty", this.hostTextField);
         }
-        if(this.consulHostPanel.getPortTextField().getText().isEmpty()) {
-            return new ValidationInfo("Port cannot be empty", this.consulHostPanel.getPortTextField());
+        if(this.portTextField.getText().isEmpty()) {
+            return new ValidationInfo("Port cannot be empty", this.portTextField);
         }
-        if(! isInteger(this.consulHostPanel.getPortTextField())) {
-            return new ValidationInfo("Port must be a numeric value", this.consulHostPanel.getPortTextField());
+        if(! isInteger(this.portTextField)) {
+            return new ValidationInfo("Port must be a numeric value", this.portTextField);
         }
 
         return null;
@@ -73,14 +80,15 @@ public class ConsulConfigurationDialog extends DialogWrapper {
     }
 
     public ConsulConfiguration getConsulConfiguration() {
-        ConsulHostPanel p = this.consulHostPanel;
-        this.consulConfiguration.setHost(p.getHostTextField().getText());
-        this.consulConfiguration.setPort(Integer.parseInt(p.getPortTextField().getText()));
+        this.consulConfiguration.setHost(hostTextField.getText());
+        this.consulConfiguration.setPort(Integer.parseInt(portTextField.getText()));
 
-        this.consulConfiguration.setAclToken(getValue(p.getAclTokenTextField()));
-        this.consulConfiguration.setDatacenter(getValue(p.getDatacenterTextField()));
-        this.consulConfiguration.setUser(getValue(p.getUserTextField()));
-        this.consulConfiguration.setPassword(getValue(p.getPasswordTextField()));
+        this.consulConfiguration.setAclToken(getValue(aclTokenTextField));
+        this.consulConfiguration.setDatacenter(getValue(dataCenterTextField));
+        this.consulConfiguration.setUser(getValue(httpBasicUserTextField));
+        this.consulConfiguration.setPassword(getValue(httpBasicPasswordTextField));
+
+        this.consulConfiguration.setUsingTls(useTlsCheckBox.isSelected());
 
         return this.consulConfiguration;
     }
@@ -94,5 +102,15 @@ public class ConsulConfigurationDialog extends DialogWrapper {
             return new String(((JPasswordField) textField).getPassword());
         }
         return text;
+    }
+
+    private void bindFromModel() {
+        this.hostTextField.setText(this.consulConfiguration.getHost());
+        this.portTextField.setText(String.valueOf(this.consulConfiguration.getPort()));
+        this.dataCenterTextField.setText(this.consulConfiguration.getDatacenter());
+        this.aclTokenTextField.setText(this.consulConfiguration.getAclToken());
+        this.httpBasicUserTextField.setText(this.consulConfiguration.getUser());
+        this.httpBasicPasswordTextField.setText(this.consulConfiguration.getPassword());
+        this.useTlsCheckBox.setSelected(this.consulConfiguration.isUsingTls());
     }
 }

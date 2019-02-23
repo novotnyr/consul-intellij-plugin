@@ -1,5 +1,7 @@
 package com.github.novotnyr.idea.consul.config;
 
+import java.util.Objects;
+
 /**
  * A configuration object for the Consul instance.
  */
@@ -21,6 +23,8 @@ public class ConsulConfiguration {
     private String password;
 
     private String datacenter;
+
+    private boolean usingTls;
 
     /**
      * Create a configuration with default values.
@@ -114,32 +118,31 @@ public class ConsulConfiguration {
         this.datacenter = datacenter;
     }
 
+    public boolean isUsingTls() {
+        return usingTls;
+    }
+
+    public void setUsingTls(boolean usingTls) {
+        this.usingTls = usingTls;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ConsulConfiguration)) return false;
-
         ConsulConfiguration that = (ConsulConfiguration) o;
-
-        if (getPort() != that.getPort()) return false;
-        if (getHost() != null ? !getHost().equals(that.getHost()) : that.getHost() != null) return false;
-        if (getAclToken() != null ? !getAclToken().equals(that.getAclToken()) : that.getAclToken() != null)
-            return false;
-        if (getUser() != null ? !getUser().equals(that.getUser()) : that.getUser() != null) return false;
-        if (getPassword() != null ? !getPassword().equals(that.getPassword()) : that.getPassword() != null)
-            return false;
-        return getDatacenter() != null ? getDatacenter().equals(that.getDatacenter()) : that.getDatacenter() == null;
+        return getPort() == that.getPort() &&
+                isUsingTls() == that.isUsingTls() &&
+                Objects.equals(getHost(), that.getHost()) &&
+                Objects.equals(getAclToken(), that.getAclToken()) &&
+                Objects.equals(getUser(), that.getUser()) &&
+                Objects.equals(getPassword(), that.getPassword()) &&
+                Objects.equals(getDatacenter(), that.getDatacenter());
     }
 
     @Override
     public int hashCode() {
-        int result = getHost() != null ? getHost().hashCode() : 0;
-        result = 31 * result + getPort();
-        result = 31 * result + (getAclToken() != null ? getAclToken().hashCode() : 0);
-        result = 31 * result + (getUser() != null ? getUser().hashCode() : 0);
-        result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
-        result = 31 * result + (getDatacenter() != null ? getDatacenter().hashCode() : 0);
-        return result;
+        return Objects.hash(getHost(), getPort(), getAclToken(), getUser(), getPassword(), getDatacenter(), isUsingTls());
     }
 
     public String toSimpleString() {
