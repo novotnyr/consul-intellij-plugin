@@ -19,60 +19,9 @@
 
   <change-notes><![CDATA[
       <p>
-      <em>0.7</em>
+      <em>0.8</em>
       <ul>
-        <li>Require at least IDE levels 2017.1</li>
-        <li>Indicate unsaved changes in node values when editing manually</li>
-        <li>Resolve compatibility between various IDE versions
-      </ul>
-      </p>
-      <p>
-      <em>0.6</em>
-      <ul>
-        <li>Enable compatibility with non-IDEA products (PhpStorm, DataGrip etc).</li>
-        <li>Minor UI improvements</li>
-      </ul>
-      </p>
-      <p>
-      <em>0.5</em>
-      <ul>
-        <li>Enable speedsearch and Expand/Collapse buttons on the K/V tree</li>
-        <li>Enable Clipboard paste for multiple entries</li>
-        <li>Reenable compatibility with older IntelliJ versions</li>
-      </ul>
-      </p>
-      <p>
-      <em>0.4</em>
-      <ul>
-        <li>Improve tree-loading performance</li>
-        <li>Properly handle special characters in key names</li>
-        <li>Fix inability to edit Consul host configurations</li>
-      </ul>
-      </p>
-      <p>
-      <em>0.3</em>
-      <ul>
-        <li>UI is rehauled to better conform to IntelliJ tree behaviour.</li>
-        <li>Support usual keyboard shortcuts to create and delete entries</li>
-        <li>Support copy and paste on the entries. If the clipboard contains <code>=</code>-delimited
-        line, you can paste it directly into the Consul tree.
-        </li>
-        <li>Show K/V values next to tree nodes</li>
-        <li>Allow editing of Consul nodes</li>
-        <li>Huge refactoring of tree internals</li>
-      </ul>
-      </p>
-      <p>
-      <em>0.2</em>
-      <ul>
-        <li>Many improvements on tree behaviour and item display</li>
-        <li>Allow to export folder into a file.
-      </ul>
-      </p>
-      <p>
-      <em>0.1</em>
-      <ul>
-        <li>Initial Release</li>
+        <li>Support SSL/TLS protocols in Consul hosts</li>
       </ul>
       </p>
     ]]>
