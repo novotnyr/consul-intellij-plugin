@@ -42,6 +42,7 @@ public class ConsulConfigurable implements Configurable {
         this.configurationTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.configurationTable.setDefaultRenderer(ConsulConfigurationTableModel.Password.class, new ConsulConfigurationTableModel.PasswordTableCellRenderer());
         this.configurationTable.setDefaultRenderer(ConsulConfigurationTableModel.Host.class, new ConsulConfigurationTableModel.HostTableCellRenderer());
+        this.configurationTable.setDefaultRenderer(ConsulConfigurationTableModel.Port.class, new ConsulConfigurationTableModel.PortTableCellRenderer());
         installDoubleClickListener(this.configurationTable);
 
         JPanel panelForTable =  ToolbarDecorator.createDecorator(this.configurationTable)

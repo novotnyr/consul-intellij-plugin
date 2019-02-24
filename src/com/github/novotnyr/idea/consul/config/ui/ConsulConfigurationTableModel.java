@@ -21,7 +21,6 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         PORT("Port"),
         ACL_TOKEN("ACL Token"),
         DATACENTER("Datacenter"),
-        TLS("TLS"),
         USER("User"),
         PASSWORD("Password");
 
@@ -65,13 +64,11 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
             case HOST:
                 return new Host(consulConfiguration);
             case PORT:
-                return consulConfiguration.getPort();
+                return new Port(consulConfiguration);
             case ACL_TOKEN:
                 return consulConfiguration.getAclToken();
             case DATACENTER:
                 return consulConfiguration.getDatacenter();
-            case TLS:
-                return consulConfiguration.isUsingTls();
             case USER:
                 return consulConfiguration.getUser();
             case PASSWORD:
@@ -93,13 +90,11 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
             case HOST:
                 return Host.class;
             case PORT:
-                return Integer.class;
+                return Port.class;
             case ACL_TOKEN:
                 return String.class;
             case DATACENTER:
                 return String.class;
-            case TLS:
-                return Boolean.class;
             case USER:
                 return String.class;
             case PASSWORD:
@@ -175,6 +170,22 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
         }
     }
 
+    public static class Port {
+        private final ConsulConfiguration consulConfiguration;
+
+        public Port(ConsulConfiguration consulConfiguration) {
+            this.consulConfiguration = consulConfiguration;
+        }
+
+        public int getPort() {
+            return this.consulConfiguration.getPort();
+        }
+
+        public boolean isUsingTls() {
+            return this.consulConfiguration.isUsingTls();
+        }
+    }
+
     public static class PasswordTableCellRenderer implements TableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -197,6 +208,20 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
                 label.setIcon(null);
             }
             return label;
+        }
+    }
+
+    public static class PortTableCellRenderer implements TableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Port port = (Port) value;
+            String cell = String.valueOf(port.getPort());
+            if (port.isUsingTls()) {
+                cell = cell + "" + " (SSL)";
+            }
+            return table.getDefaultRenderer(String.class)
+                    .getTableCellRendererComponent(table, cell, isSelected, hasFocus, row, column);
+
         }
     }
 }
