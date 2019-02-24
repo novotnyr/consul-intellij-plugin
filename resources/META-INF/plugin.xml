@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.novotnyr.consul-intellij-plugin</id>
   <name>Consul K/V Support</name>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.8</version>
   <vendor url="https://github.com/novotnyr/consul-intellij-plugin">Róbert Novotný</vendor>
 
   <description><![CDATA[
