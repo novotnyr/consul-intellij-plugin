@@ -70,6 +70,9 @@ public abstract class AbstractComboBoxAction<T> extends ComboBoxAction {
 
     public void update() {
         Presentation presentation = this.presentation == null ? this.getTemplatePresentation() : this.presentation;
+        if (presentation == null) {
+            presentation = new Presentation();
+        }
         this.update(this.selection, presentation, false);
     }
 
