@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.github.novotnyr.consul-intellij-plugin</id>
   <name>Consul K/V Support</name>
-  <version>0.91-SNAPSHOT</version>
+  <version>0.91</version>
   <vendor url="https://github.com/novotnyr/consul-intellij-plugin">Róbert Novotný</vendor>
 
   <description><![CDATA[
@@ -19,7 +19,7 @@
 
   <change-notes><![CDATA[
       <p>
-      <em>0.9</em>
+      <em>0.91</em>
       <ul>
         <li>Improve compatibility with IntelliJ 2019.1</li>
       </ul>
