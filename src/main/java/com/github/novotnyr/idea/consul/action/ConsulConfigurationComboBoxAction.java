@@ -2,11 +2,10 @@ package com.github.novotnyr.idea.consul.action;
 
 import com.github.novotnyr.idea.consul.Topics;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
-import com.github.novotnyr.idea.consul.config.ConsulConfigurationPersistentService;
+import com.github.novotnyr.idea.consul.config.PluginSettings;
 import com.github.novotnyr.idea.consul.ui.AbstractComboBoxAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.messages.MessageBus;
 
@@ -28,9 +27,9 @@ public class ConsulConfigurationComboBoxAction extends AbstractComboBoxAction<Co
     }
 
     public void refreshItems() {
-        ConsulConfigurationPersistentService consulConfigurationPersistentService = ServiceManager.getService(ConsulConfigurationPersistentService.class);
+        PluginSettings pluginSettings = PluginSettings.getInstance();
 
-        List<ConsulConfiguration> consulConfigurations = consulConfigurationPersistentService.getConsulConfigurationList();
+        List<ConsulConfiguration> consulConfigurations = pluginSettings.getConsulConfigurationList();
         ConsulConfiguration selection = getSelection();
         if(selection == null) {
             selection = consulConfigurations.isEmpty() ? null : consulConfigurations.get(0);

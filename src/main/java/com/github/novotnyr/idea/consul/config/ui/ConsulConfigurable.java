@@ -1,8 +1,7 @@
 package com.github.novotnyr.idea.consul.config.ui;
 
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
-import com.github.novotnyr.idea.consul.config.ConsulConfigurationPersistentService;
-import com.intellij.openapi.components.ServiceManager;
+import com.github.novotnyr.idea.consul.config.PluginSettings;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.AnActionButton;
@@ -18,11 +17,11 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.MouseEvent;
 
 public class ConsulConfigurable implements Configurable {
+    private final PluginSettings pluginSettings = PluginSettings.getInstance();
+
     private JBTable configurationTable;
 
     private ConsulConfigurationTableModel configurationTableModel;
-
-    private ConsulConfigurationPersistentService consulConfigurationPersistentService;
 
     @Nls
     @Override
@@ -33,10 +32,8 @@ public class ConsulConfigurable implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        this.consulConfigurationPersistentService = ServiceManager.getService(ConsulConfigurationPersistentService.class);
-
         this.configurationTableModel = new ConsulConfigurationTableModel();
-        this.configurationTableModel.setConsulConfigurations(this.consulConfigurationPersistentService.getConsulConfigurationList());
+        this.configurationTableModel.setConsulConfigurations(this.pluginSettings.getConsulConfigurationList());
 
         this.configurationTable = new JBTable(this.configurationTableModel);
         this.configurationTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -95,7 +92,7 @@ public class ConsulConfigurable implements Configurable {
 
     @Override
     public void apply() throws ConfigurationException {
-        this.consulConfigurationPersistentService.setConsulConfigurationList(this.configurationTableModel.getConfigurationList());
+        this.pluginSettings.setConsulConfigurationList(this.configurationTableModel.getConfigurationList());
     }
 
     @Nullable
