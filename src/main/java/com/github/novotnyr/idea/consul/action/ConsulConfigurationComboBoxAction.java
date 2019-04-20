@@ -29,7 +29,7 @@ public class ConsulConfigurationComboBoxAction extends AbstractComboBoxAction<Co
     public void refreshItems() {
         PluginSettings pluginSettings = PluginSettings.getInstance();
 
-        List<ConsulConfiguration> consulConfigurations = pluginSettings.getConsulConfigurationList();
+        List<ConsulConfiguration> consulConfigurations = pluginSettings.getFullConsulConfigurations();
         ConsulConfiguration selection = getSelection();
         if(selection == null) {
             selection = consulConfigurations.isEmpty() ? null : consulConfigurations.get(0);

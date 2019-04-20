@@ -25,6 +25,8 @@
     <applicationConfigurable instance="com.github.novotnyr.idea.consul.config.ui.ConsulConfigurable" />
     <applicationService
             serviceImplementation="com.github.novotnyr.idea.consul.config.PluginSettings"/>
+    <applicationService serviceImplementation="com.github.novotnyr.idea.consul.config.CredentialRepository"/>
+    <applicationService serviceImplementation="com.github.novotnyr.idea.consul.config.ConsulConfigurationRepository"/>
   </extensions>
 
   <actions>

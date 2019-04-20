@@ -41,9 +41,7 @@ public class ConsulConfigurationTableModel extends AbstractTableModel {
 
     public ConsulConfigurationTableModel() {
         ConsulConfiguration cfg = new ConsulConfiguration("localhost", 8500);
-        ConsulConfiguration cfg2 = new ConsulConfiguration("web", 8500);
         this.configurationList.add(cfg);
-        this.configurationList.add(cfg2);
     }
 
     @Override

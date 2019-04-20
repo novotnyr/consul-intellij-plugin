@@ -33,7 +33,7 @@ public class ConsulConfigurable implements Configurable {
     @Override
     public JComponent createComponent() {
         this.configurationTableModel = new ConsulConfigurationTableModel();
-        this.configurationTableModel.setConsulConfigurations(this.pluginSettings.getConsulConfigurationList());
+        this.configurationTableModel.setConsulConfigurations(this.pluginSettings.getFullConsulConfigurations());
 
         this.configurationTable = new JBTable(this.configurationTableModel);
         this.configurationTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -92,7 +92,7 @@ public class ConsulConfigurable implements Configurable {
 
     @Override
     public void apply() throws ConfigurationException {
-        this.pluginSettings.setConsulConfigurationList(this.configurationTableModel.getConfigurationList());
+        this.pluginSettings.setFullConsulConfigurations(this.configurationTableModel.getConfigurationList());
     }
 
     @Nullable
