@@ -16,8 +16,6 @@
       </ul>
     ]]></description>
 
-  <idea-version since-build="181"/>
-
   <depends>com.intellij.modules.lang</depends>
 
   <extensions defaultExtensionNs="com.intellij">

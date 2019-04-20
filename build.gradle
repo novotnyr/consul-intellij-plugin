@@ -23,6 +23,8 @@ intellij {
     version '2018.1'
 }
 patchPluginXml {
+    sinceBuild '181'
+    untilBuild '191.*'
     changeNotes """
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
