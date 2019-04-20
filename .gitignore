@@ -1,10 +1,7 @@
-.idea/markdown-exported-files.xml
-.idea/markdown-navigator/
-.idea/markdown-navigator.xml
-.idea/workspace.xml
-.idea/inspectionProfiles/
-.idea/uiDesigner.xml
+.idea/
 out/
 consul-intellij-plugin.zip
-.idea/dictionaries/
-/.idea/git_toolbox_prj.xml
+.gradle/
+gradle/
+build/
+*.iml
