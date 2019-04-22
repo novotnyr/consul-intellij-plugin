@@ -66,6 +66,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
                 public void onDone(KVNode treeRoot) {
                     setNodeLabel(treeRoot, getTreeRootNodeLabel());
                     ConsulTreeModel.this.delegateModel.setRoot(treeRoot);
+                    ConsulTreeModel.this.delegateModel.nodeStructureChanged(treeRoot);
                     tree.setPaintBusy(false);
 
                     ConsulTreeModel.this.state = State.LOADED;
@@ -173,7 +174,7 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
 
         String[] components = keyAndValue.getFullyQualifiedKey().split("/");
 
-        KVNode node = (KVNode) getRoot();
+        KVNode node = getDelegateRoot();
         for (String component : components) {
             for (KVNode child : TreeUtils.iterableChildren(node)) {
                 KeyAndValue childKV = child.getKeyAndValue();

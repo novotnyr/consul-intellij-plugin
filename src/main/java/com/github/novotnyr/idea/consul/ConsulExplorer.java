@@ -195,6 +195,9 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         tree.addTreeWillExpandListener(this.treeModel);
         tree.addTreeSelectionListener(this.treeModel);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        if (keyAndValuePanel != null) {
+            this.keyAndValuePanel.setTreeModel(treeModel);
+        }
     }
 
     private void treeValueSelected(KeyAndValue kv) {

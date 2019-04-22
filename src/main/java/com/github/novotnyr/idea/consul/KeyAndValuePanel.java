@@ -125,7 +125,7 @@ public class KeyAndValuePanel extends JPanel {
 
 
     private JComponent getFolderContentPane() {
-        this.folderContentsTablePanel = new FolderContentsTablePanel(consulTree, this.keyAndValue);
+        this.folderContentsTablePanel = new FolderContentsTablePanel(this.consulTree, this.keyAndValue);
         return this.folderContentsTablePanel;
     }
 
@@ -143,6 +143,10 @@ public class KeyAndValuePanel extends JPanel {
             this.valueTextAreaDocumentListener.enableEventHandling();
             cardLayout.show(this.middlePanel, Mode.ENTRY.name());
         }
+    }
+
+    public void setTreeModel(ConsulTreeModel consulTree) {
+        this.consulTree = consulTree;
     }
 
     public class SubmitChangesAction extends AnAction {
