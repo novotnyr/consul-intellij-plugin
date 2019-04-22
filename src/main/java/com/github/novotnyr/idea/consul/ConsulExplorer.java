@@ -101,7 +101,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         new TreeSpeedSearch(this.tree);
         this.treeExpander = new DefaultTreeExpander(this.tree);
 
-        this.consulPeriodicStatusCheckController = new ConsulPeriodicStatusCheckController(this.tree);
+        this.consulPeriodicStatusCheckController = new ConsulPeriodicStatusCheckController();
         this.consulPeriodicStatusCheckController.restartPeriodicTreeStatusCheck(consulConfiguration);
 
         this.newFolderAction = new NewFolderActionButton(this.consul);

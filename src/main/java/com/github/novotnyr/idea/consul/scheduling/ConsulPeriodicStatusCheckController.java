@@ -3,28 +3,23 @@ package com.github.novotnyr.idea.consul.scheduling;
 import com.github.novotnyr.idea.consul.Topics;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.config.PluginSettings;
-import com.github.novotnyr.idea.consul.tree.ConsulTree;
 import com.google.common.collect.MapDifference;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.popup.Balloon;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.ui.UIUtil;
 
 public class ConsulPeriodicStatusCheckController {
     private final Logger logger = Logger.getInstance(ConsulPeriodicStatusCheckController.class);
 
-    private final ConsulTree tree;
-
     private final PluginSettings pluginSettings = PluginSettings.getInstance();
 
     private ConsulPeriodicStatusChecker consulPeriodicStatusChecker;
 
-    public ConsulPeriodicStatusCheckController(ConsulTree tree) {
-        this.tree = tree;
+    public ConsulPeriodicStatusCheckController() {
         initMessageBus();
     }
 
@@ -68,12 +63,11 @@ public class ConsulPeriodicStatusCheckController {
                 UIUtil.invokeLaterIfNeeded(new Runnable() {
                     @Override
                     public void run() {
-                        JBPopupFactory.getInstance()
-                                .createHtmlTextBalloonBuilder("Remote Consul tree has been changed. Please refresh!", MessageType.INFO, null)
-                                .setFadeoutTime(7500)
-                                .createBalloon()
-                                .show(RelativePoint.getNorthWestOf(ConsulPeriodicStatusCheckController.this.tree),
-                                        Balloon.Position.atRight);
+                        String message = "Remote Consul at "
+                                + newConfiguration.getHost() + ":" + newConfiguration.getPort()
+                                + " has been updated";
+                        Notification notification = new Notification("consul", "Consul K/V updated", message, NotificationType.INFORMATION);
+                        Notifications.Bus.notify(notification);
                     }
                 });
             }
