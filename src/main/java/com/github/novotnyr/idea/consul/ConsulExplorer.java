@@ -10,6 +10,7 @@ import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
 import com.github.novotnyr.idea.consul.action.ShowSettingsAction;
 import com.github.novotnyr.idea.consul.action.UpdateEntryAction;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
+import com.github.novotnyr.idea.consul.scheduling.ConsulPeriodicStatusCheckController;
 import com.github.novotnyr.idea.consul.tree.ConsulTree;
 import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
@@ -72,6 +73,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
 
     private DeleteEntryAction deleteEntryAction;
 
+    private ConsulPeriodicStatusCheckController consulPeriodicStatusCheckController;
+
     public ConsulExplorer(Project project) {
         super(true);
 
@@ -83,7 +86,8 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         this.consulConfigurationComboBoxAction = new ConsulConfigurationComboBoxAction(this.messageBus);
         this.consulConfigurationComboBoxAction.refreshItems();
 
-        this.consul = new Consul(consulConfigurationComboBoxAction.getSelection());
+        ConsulConfiguration consulConfiguration = consulConfigurationComboBoxAction.getSelection();
+        this.consul = new Consul(consulConfiguration);
         initActions();
 
         setToolbar(createToolbarPanel());
@@ -96,6 +100,9 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
         TreeUtil.installActions(tree);
         new TreeSpeedSearch(this.tree);
         this.treeExpander = new DefaultTreeExpander(this.tree);
+
+        this.consulPeriodicStatusCheckController = new ConsulPeriodicStatusCheckController(this.tree);
+        this.consulPeriodicStatusCheckController.restartPeriodicTreeStatusCheck(consulConfiguration);
 
         this.newFolderAction = new NewFolderActionButton(this.consul);
         this.newEntryAction = new ConsolidatedNewEntryAction(new NewEntryAction(this.consul), this.newFolderAction, tree, this.consul);
@@ -143,12 +150,15 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable,
                 consul.setConfiguration(newConfiguration);
                 refresh();
                 bindTreeModel();
+                consulPeriodicStatusCheckController.restartPeriodicTreeStatusCheck(newConfiguration);
             }
         });
         this.busConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED, new Topics.KeyValueChanged() {
             @Override
             public void keyValueChanged(KeyAndValue keyAndValue) {
                 updateEntryAction.update(keyAndValue);
+                // prevent seeing our most recent changes as the remote changes by someone else
+                consulPeriodicStatusCheckController.clearLocalTree();
             }
         });
     }

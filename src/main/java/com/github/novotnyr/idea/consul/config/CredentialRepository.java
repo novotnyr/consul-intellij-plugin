@@ -53,12 +53,13 @@ public class CredentialRepository {
 
     private void extractSecureElement(PluginSettings.PersistedConsulConfiguration consulConfiguration, String key, Consumer<String> assigner) {
         CredentialAttributes attr = getCredentialAttributes(consulConfiguration, key);
-        Credentials credentials = passwordSafe.get(attr);
-        if (credentials != null) {
-            String password = credentials.getPasswordAsString();
-            if (password != null) {
-                assigner.accept(password);
-            }
+        Credentials credentials = this.passwordSafe.get(attr);
+        if (credentials == null) {
+            return;
+        }
+        String password = credentials.getPasswordAsString();
+        if (password != null) {
+            assigner.accept(password);
         }
     }
 

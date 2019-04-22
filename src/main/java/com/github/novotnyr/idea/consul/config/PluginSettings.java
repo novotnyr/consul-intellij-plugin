@@ -15,11 +15,15 @@ import java.util.stream.Collectors;
 @State(name = "consul-hosts", storages = @Storage("consul.xml"))
 public class PluginSettings implements PersistentStateComponent<PluginSettings> {
 
+    public static final int NO_REFRESH = -1;
+
     public static PluginSettings getInstance() {
         return ServiceManager.getService(PluginSettings.class);
     }
 
     private List<PersistedConsulConfiguration> consulConfigurationList = new ArrayList<>();
+
+    private int remoteConsulTreeRefreshInterval = NO_REFRESH;
 
     @Nullable
     @Override
@@ -40,6 +44,7 @@ public class PluginSettings implements PersistentStateComponent<PluginSettings> 
             return;
         }
         setConsulConfigurationList(filteredPersistedConfigurations);
+        this.remoteConsulTreeRefreshInterval = persistedSettings.getRemoteConsulTreeRefreshInterval();
     }
 
     public void setConsulConfigurationList(List<PersistedConsulConfiguration> consulConfigurationList) {
@@ -75,6 +80,14 @@ public class PluginSettings implements PersistentStateComponent<PluginSettings> 
             configList.add(fullConfig);
         }
         return configList;
+    }
+
+    public void setRemoteConsulTreeRefreshInterval(int remoteConsulTreeRefreshInterval) {
+        this.remoteConsulTreeRefreshInterval = remoteConsulTreeRefreshInterval;
+    }
+
+    public int getRemoteConsulTreeRefreshInterval() {
+        return remoteConsulTreeRefreshInterval;
     }
 
     /**

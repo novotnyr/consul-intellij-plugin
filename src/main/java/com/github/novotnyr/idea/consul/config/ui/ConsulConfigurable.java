@@ -1,19 +1,24 @@
 package com.github.novotnyr.idea.consul.config.ui;
 
+import com.github.novotnyr.idea.consul.Topics;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.config.PluginSettings;
+import com.github.novotnyr.idea.consul.scheduling.ui.PeriodicCheckSettingsPanel;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.JBTable;
+import com.intellij.util.messages.MessageBus;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 
 public class ConsulConfigurable implements Configurable {
@@ -22,6 +27,8 @@ public class ConsulConfigurable implements Configurable {
     private JBTable configurationTable;
 
     private ConsulConfigurationTableModel configurationTableModel;
+
+    private PeriodicCheckSettingsPanel periodicCheckSettingsPanel;
 
     @Nls
     @Override
@@ -47,7 +54,16 @@ public class ConsulConfigurable implements Configurable {
                 .setRemoveAction(this::onRemoveAction)
                 .disableUpDownActions()
                 .createPanel();
-        return panelForTable;
+
+        this.periodicCheckSettingsPanel = new PeriodicCheckSettingsPanel();
+        this.periodicCheckSettingsPanel.setPeriodInSeconds(this.pluginSettings.getRemoteConsulTreeRefreshInterval());
+
+        JPanel rootPanel = new JPanel();
+        rootPanel.setLayout(new BorderLayout());
+        rootPanel.add(panelForTable, BorderLayout.CENTER);
+        rootPanel.add(this.periodicCheckSettingsPanel.get(), BorderLayout.PAGE_END);
+
+        return rootPanel;
     }
 
     private void installDoubleClickListener(JBTable table) {
@@ -93,7 +109,21 @@ public class ConsulConfigurable implements Configurable {
     @Override
     public void apply() throws ConfigurationException {
         this.pluginSettings.setFullConsulConfigurations(this.configurationTableModel.getConfigurationList());
+
+        if (this.periodicCheckSettingsPanel.isPeriodicalCheckEnabled()) {
+            int period = this.periodicCheckSettingsPanel.getPeriodInSeconds();
+            this.pluginSettings.setRemoteConsulTreeRefreshInterval(period);
+        } else {
+            this.pluginSettings.setRemoteConsulTreeRefreshInterval(PluginSettings.NO_REFRESH);
+        }
+        notifyMessageBusConsulConfigurableChanged();
     }
+
+    private void notifyMessageBusConsulConfigurableChanged() {
+        MessageBus messageBus = ApplicationManager.getApplication().getMessageBus();
+        messageBus.syncPublisher(Topics.PluginConfigurationChanged.PLUGIN_CONFIGURATION_CHANGED).consulPluginConfigurationChanged();
+    }
+
 
     @Nullable
     @Override

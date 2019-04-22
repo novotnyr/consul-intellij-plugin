@@ -29,4 +29,10 @@ public class Topics {
 
         void consulTreeSelectionChanged(KeyAndValue changedKeyAndValue);
     }
+
+    public interface PluginConfigurationChanged {
+        Topic<PluginConfigurationChanged> PLUGIN_CONFIGURATION_CHANGED = Topic.create("Consul Plugin Configuration Changed", PluginConfigurationChanged.class);
+
+        void consulPluginConfigurationChanged();
+    }
 }
