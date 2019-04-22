@@ -26,6 +26,10 @@ patchPluginXml {
     sinceBuild '181'
     untilBuild '191.*'
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      <b>Important:</b> This version will reset your Consul settings. Please create Consul hosts again. This is necessary due to secure storage of credentials in the IntelliJ Platform.
+      <ul>
+          <li>Store Consul credentials in IntelliJ password mechanism
+          <li>Add periodic check of remote Consul tree. Get notified when there are external changes</li>
+      </ul>
+      """
 }

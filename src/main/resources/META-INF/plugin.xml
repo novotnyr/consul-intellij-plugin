@@ -13,6 +13,7 @@
             <li>Export the contents of a Consul folder to the <code>.properties</code> file</li>
             <li>Paste values like <code>version=1</code> directly from the Clipboard to the Consul tree
             <li>Copy values to the Clipboard in the <code>=</code>-delimited format</li>
+            <li>Get notified about external changes of remote Consul K/V changes</li>
       </ul>
     ]]></description>
 
