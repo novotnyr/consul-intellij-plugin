@@ -5,3 +5,4 @@ consul-intellij-plugin.zip
 gradle/
 build/
 *.iml
+publish.sh

@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.novotnyr'
-version '0.100-SNAPSHOT'
+version '1'
 
 sourceCompatibility = 1.8
 
@@ -26,11 +26,15 @@ patchPluginXml {
     sinceBuild '181'
     untilBuild '191.*'
     changeNotes """
-      <b>Important:</b> This version will reset your Consul settings. Please create Consul hosts again. This is necessary due to secure storage of credentials in the IntelliJ Platform.
+      <b>Important:</b> This version will reset your Consul settings. Please create Consul configurations in the Preferences. This change is necessary due to secure storage of credentials in the IntelliJ Platform. We apologize for any inconvenience.
       <ul>
           <li>Store Consul credentials in IntelliJ password mechanism
           <li>Show overall folder keys and values consistently for nonlocal servers
           <li>Add periodic check of remote Consul tree. Get notified when there are external changes</li>
       </ul>
       """
+}
+
+publishPlugin {
+    token jetbrainsPublishToken
 }
