@@ -22,6 +22,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.AnActionButton;
@@ -39,7 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-public class ConsulExplorer extends SimpleToolWindowPanel implements Disposable, ConsulTreeModel.TreeModelLoadingListener {
+public class ConsulExplorer extends SimpleToolWindowPanel implements DumbAware, Disposable, ConsulTreeModel.TreeModelLoadingListener {
 
     private Consul consul;
 
