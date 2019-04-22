@@ -65,7 +65,7 @@ public class CredentialRepository {
 
     @NotNull
     private CredentialAttributes getCredentialAttributes(PluginSettings.PersistedConsulConfiguration consulConfiguration, String key) {
-        return new CredentialAttributes(key + ":" + consulConfiguration.toUrl(), key);
+        return new CredentialAttributes(consulConfiguration.getAuthority() + "/" + key, key);
     }
 
 

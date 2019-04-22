@@ -118,6 +118,10 @@ public class PluginSettings implements PersistentStateComponent<PluginSettings> 
             return cfg;
         }
 
+        public String getAuthority() {
+            return this.host + ":" + this.port;
+        }
+
         public String toUrl() {
             StringBuilder url = new StringBuilder();
             if (isUsingTls()) {
