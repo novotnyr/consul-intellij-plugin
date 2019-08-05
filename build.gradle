@@ -34,7 +34,3 @@ patchPluginXml {
       </ul>
       """
 }
-
-publishPlugin {
-    token jetbrainsPublishToken
-}
