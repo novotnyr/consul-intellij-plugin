@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.novotnyr'
-version '2-SNAPSHOT'
+version '2'
 
 sourceCompatibility = 1.8
 
@@ -26,11 +26,8 @@ intellij {
 patchPluginXml {
     sinceBuild '181'
     changeNotes """
-      <b>Important:</b> This version will reset your Consul settings. Please create Consul configurations in the Preferences. This change is necessary due to secure storage of credentials in the IntelliJ Platform. We apologize for any inconvenience.
       <ul>
-          <li>Store Consul credentials in IntelliJ password mechanism
-          <li>Show overall folder keys and values consistently for nonlocal servers
-          <li>Add periodic check of remote Consul tree. Get notified when there are external changes</li>
+          <li>Improve compatibility with IntelliJ IDEA 2019.2
       </ul>
       """
 }
