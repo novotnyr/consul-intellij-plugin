@@ -21,10 +21,10 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version '2018.1'
+    updateSinceUntilBuild false
 }
 patchPluginXml {
     sinceBuild '181'
-    untilBuild '191.*'
     changeNotes """
       <b>Important:</b> This version will reset your Consul settings. Please create Consul configurations in the Preferences. This change is necessary due to secure storage of credentials in the IntelliJ Platform. We apologize for any inconvenience.
       <ul>
