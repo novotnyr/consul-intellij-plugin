@@ -5,7 +5,7 @@ import com.github.novotnyr.idea.consul.tree.ConsulTreeModel;
 import com.github.novotnyr.idea.consul.tree.KVNode;
 import com.github.novotnyr.idea.consul.tree.KeyAndValue;
 import com.github.novotnyr.idea.consul.tree.TreeUtils;
-import com.intellij.icons.AllIcons;
+import com.github.novotnyr.idea.consul.util.Icons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -24,7 +24,7 @@ public class ExportFolderAction extends AbstractEntryAction {
     private ConsulTreeModel treeModel;
 
     public ExportFolderAction(Consul consul, MessageBus messageBus) {
-        super(consul, messageBus, "Export Folder", "Export Folder as JSON", AllIcons.Actions.Export);
+        super(consul, messageBus, "Export Folder", "Export Folder as JSON", Icons.export());
     }
 
     @Override
