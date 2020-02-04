@@ -31,3 +31,7 @@ patchPluginXml {
       </ul>
       """
 }
+
+publishPlugin {
+    token intellijPublishToken
+}
