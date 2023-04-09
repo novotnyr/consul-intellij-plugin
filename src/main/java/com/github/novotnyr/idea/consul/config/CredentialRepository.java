@@ -9,12 +9,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class CredentialRepository {
-    private final PasswordSafe passwordSafe;
-
-    public CredentialRepository(PasswordSafe passwordSafe) {
-        this.passwordSafe = passwordSafe;
-    }
-
     public ConsulCredentials find(PluginSettings.PersistedConsulConfiguration consulConfiguration) {
         ConsulCredentials credentials = new ConsulCredentials();
 
@@ -48,12 +42,12 @@ public class CredentialRepository {
         }
         CredentialAttributes attr = getCredentialAttributes(consulConfiguration, key);
         Credentials credentials = new Credentials(key, secureElement);
-        this.passwordSafe.set(attr, credentials);
+        getPasswordSafe().set(attr, credentials);
     }
 
     private void extractSecureElement(PluginSettings.PersistedConsulConfiguration consulConfiguration, String key, Consumer<String> assigner) {
         CredentialAttributes attr = getCredentialAttributes(consulConfiguration, key);
-        Credentials credentials = this.passwordSafe.get(attr);
+        Credentials credentials = getPasswordSafe().get(attr);
         if (credentials == null) {
             return;
         }
@@ -61,6 +55,10 @@ public class CredentialRepository {
         if (password != null) {
             assigner.accept(password);
         }
+    }
+
+    private PasswordSafe getPasswordSafe() {
+        return PasswordSafe.getInstance();
     }
 
     @NotNull
