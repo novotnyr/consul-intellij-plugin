@@ -10,7 +10,7 @@ public class ConsulTreeModelTest {
     @Test
     public void test() throws Exception {
         ConsulTreeModel consulTreeModel = new ConsulTreeModel(null, new Consul(new ConsulConfiguration()));
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) consulTreeModel.getNode(new KeyAndValue("config/default/multitenancy/ft"));
+        DefaultMutableTreeNode node = consulTreeModel.getNode(new KeyAndValue("config/default/multitenancy/ft"));
 
         KeyAndValue userObject = (KeyAndValue) node.getUserObject();
         System.out.println(userObject.getFullyQualifiedKey());
