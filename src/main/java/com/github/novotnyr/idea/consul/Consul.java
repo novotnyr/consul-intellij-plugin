@@ -7,7 +7,6 @@ import com.ecwid.consul.v1.kv.model.GetValue;
 import com.ecwid.consul.v1.kv.model.PutParams;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -89,12 +88,7 @@ public class Consul {
     }
 
     protected String urlEncode(String key) {
-        try {
-            return URLEncoder.encode(key, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            // generally, this should never happen
-            throw new IllegalStateException("Unsupported encoding", e);
-        }
+        return URLEncoder.encode(key, StandardCharsets.UTF_8);
     }
 
     public void setConfiguration(ConsulConfiguration configuration) {
