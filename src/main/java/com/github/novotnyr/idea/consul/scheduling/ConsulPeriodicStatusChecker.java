@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.concurrency.AppExecutorUtil;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,9 @@ public class ConsulPeriodicStatusChecker {
             logger.debug("Retrieving remote Consul tree for " + this.consulConfiguration.toSimpleString());
             Consul consul = new Consul(this.consulConfiguration);
             List<GetValue> allValues = consul.getAllValues();
+            if (allValues == null) {
+                allValues = Collections.emptyList();
+            }
             Map<String, String> remoteTree = new LinkedHashMap<>(allValues.size());
             for (GetValue getValue : allValues) {
                 remoteTree.put(getValue.getKey(), getValue.getValue());
