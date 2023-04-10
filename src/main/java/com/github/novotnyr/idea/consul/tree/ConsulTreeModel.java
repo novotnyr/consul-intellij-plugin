@@ -59,7 +59,6 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
         ConsulTreeLoadingWorker loader = new ConsulTreeLoadingWorker(this.consul);
         if(this.state == State.NEW) {
             this.state = State.LOADING;
-            this.treeModelLoadingListener.onBeforeTreeModelLoading();
             tree.setPaintBusy(true);
             setRootNodeLabel("Loading " + getTreeRootNodeLabel() + "...");
             loader.setOnDoneListener(new ConsulTreeLoadingWorker.OnDoneListener() {
@@ -238,17 +237,10 @@ public class ConsulTreeModel implements TreeWillExpandListener, TreeSelectionLis
     public interface TreeModelLoadingListener {
         TreeModelLoadingListener INSTANCE = new TreeModelLoadingListener() {
             @Override
-            public void onBeforeTreeModelLoading() {
-
-            }
-
-            @Override
             public void onTreeModelSuccessfullyLoadedListener() {
 
             }
         };
-
-        void onBeforeTreeModelLoading();
 
         void onTreeModelSuccessfullyLoadedListener();
     }

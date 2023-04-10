@@ -24,8 +24,6 @@ public class ConsulTreeLoadingWorker extends SwingWorker<KVNode, Void> {
 
     private Consul consul;
 
-    private String path = "";
-
     private OnDoneListener onDoneListener = new OnDoneListener() { /* noop */ };
 
     public ConsulTreeLoadingWorker(Consul consul) {

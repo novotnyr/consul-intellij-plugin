@@ -1,8 +1,5 @@
 package com.github.novotnyr.idea.consul.tree;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.impl.SimpleDataContext;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,13 +19,6 @@ public class TreeUtils {
             newChildrenList.add((N) c);
         }
         return newChildrenList;
-    }
-
-    public static AnActionEvent getEventForSelectedKeyAndValue(KeyAndValue keyAndValue) {
-        DataContext dataContext = SimpleDataContext.getSimpleContext("selectedKeyAndValue", keyAndValue);
-        AnActionEvent event = AnActionEvent.createFromDataContext("ConsulExplorer", null, dataContext);
-
-        return event;
     }
 
     public static void expandConsulTree(final ConsulTree tree, TreePath treePath) {

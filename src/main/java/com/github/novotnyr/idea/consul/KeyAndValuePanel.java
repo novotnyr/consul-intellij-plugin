@@ -50,8 +50,6 @@ public class KeyAndValuePanel extends JPanel {
 
     private IgnorableDocumentAdapter valueTextAreaDocumentListener;
 
-    private Mode viewMode;
-
     public KeyAndValuePanel(@NotNull MessageBus messageBus, @NotNull ConsulTreeModel consulTree) {
         super();
         this.consulTree = consulTree;

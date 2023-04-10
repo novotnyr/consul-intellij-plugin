@@ -37,10 +37,6 @@ public abstract class AbstractConsulButtonController implements AnActionButtonRu
         return tree.getSelectionModel().getSelectionCount() > 0;
     }
 
-    public ConsulTree getConsulTree() {
-        return this.consulTree;
-    }
-
     public String getFqn() {
         return getSelectedKeyAndValue().getFullyQualifiedKey();
     }

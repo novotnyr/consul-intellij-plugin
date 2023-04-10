@@ -216,10 +216,6 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements DumbAware, 
     private TreePath selectionPath;
 
     @Override
-    public void onBeforeTreeModelLoading() {
-    }
-
-    @Override
     public void onTreeModelSuccessfullyLoadedListener() {
         if (this.selectionPath != null) {
             TreeUtils.expandConsulTree(this.tree, TreeUtils.removeHead(this.selectionPath));
