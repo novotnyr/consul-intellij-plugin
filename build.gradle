@@ -27,7 +27,7 @@ patchPluginXml {
     sinceBuild '211'
     changeNotes """
       <ul>
-          <li>Improve compatibility with IntelliJ IDEA 2020.1
+          <li>Require at least IntelliJ 2021.1
       </ul>
       """
 }
