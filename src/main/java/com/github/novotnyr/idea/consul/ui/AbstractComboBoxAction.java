@@ -1,7 +1,6 @@
 package com.github.novotnyr.idea.consul.ui;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -77,11 +76,7 @@ public abstract class AbstractComboBoxAction<T> extends ComboBoxAction {
         this.update(this.selection, presentation, false);
     }
 
-    public JComponent createCustomComponent(Presentation presentation) {
-        return this.createCustomComponent(presentation, ActionPlaces.UNKNOWN);
-
-    }
-
+    @NotNull
     public JComponent createCustomComponent(@NotNull Presentation presentation, @NotNull String place) {
         this.presentation = presentation;
         update();
