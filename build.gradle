@@ -20,11 +20,11 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2018.1'
+    version '2021.1'
     updateSinceUntilBuild false
 }
 patchPluginXml {
-    sinceBuild '181'
+    sinceBuild '211'
     changeNotes """
       <ul>
           <li>Improve compatibility with IntelliJ IDEA 2020.1
