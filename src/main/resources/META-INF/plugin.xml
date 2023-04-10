@@ -26,6 +26,8 @@
             serviceImplementation="com.github.novotnyr.idea.consul.config.PluginSettings"/>
     <applicationService serviceImplementation="com.github.novotnyr.idea.consul.config.CredentialRepository"/>
     <applicationService serviceImplementation="com.github.novotnyr.idea.consul.config.ConsulConfigurationRepository"/>
+
+    <notificationGroup id="Consul" displayType="BALLOON" />
   </extensions>
 
   <actions>

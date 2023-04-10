@@ -61,7 +61,7 @@ public class ConsulPeriodicStatusCheckController {
                     String message = "Remote Consul at "
                             + newConfiguration.getHost() + ":" + newConfiguration.getPort()
                             + " has been updated";
-                    Notification notification = new Notification("consul", "Consul K/V updated", message, NotificationType.INFORMATION);
+                    Notification notification = new Notification("Consul", "Consul K/V updated", message, NotificationType.INFORMATION);
                     Notifications.Bus.notify(notification);
                 });
             }
