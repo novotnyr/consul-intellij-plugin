@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ex.CheckboxAction;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.ui.content.Content;
@@ -26,8 +25,6 @@ public class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFact
             ToolWindowEx extendedToolWindow = (ToolWindowEx) toolWindow;
             extendedToolWindow.setAdditionalGearActions(getToolWindowActionGroup(consulExplorer));
         }
-
-        Disposer.register(project, consulExplorer);
     }
 
     private ActionGroup getToolWindowActionGroup(ConsulExplorer consulExplorer) {
