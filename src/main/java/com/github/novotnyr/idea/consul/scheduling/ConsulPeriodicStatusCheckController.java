@@ -1,6 +1,7 @@
 package com.github.novotnyr.idea.consul.scheduling;
 
 import com.github.novotnyr.idea.consul.Topics;
+import com.github.novotnyr.idea.consul.action.RefreshTreeAction;
 import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import com.github.novotnyr.idea.consul.config.PluginSettings;
 import com.google.common.collect.MapDifference;
@@ -62,6 +63,7 @@ public class ConsulPeriodicStatusCheckController {
                             + newConfiguration.getHost() + ":" + newConfiguration.getPort()
                             + " has been updated";
                     Notification notification = new Notification("Consul", "Consul K/V updated", message, NotificationType.INFORMATION);
+                    notification.addAction(RefreshTreeAction.createNotificationAction());
                     Notifications.Bus.notify(notification);
                 });
             }
