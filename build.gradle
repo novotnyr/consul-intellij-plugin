@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.novotnyr'
-version '4-SNAPSHOT'
+version '4'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -37,6 +37,7 @@ patchPluginXml {
     changeNotes = """
       <ul>
           <li>Require at least IntelliJ 2021.1
+          <li>Require Java 11
       </ul>
       """
 }
