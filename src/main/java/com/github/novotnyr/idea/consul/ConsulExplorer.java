@@ -137,30 +137,21 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements DumbAware, 
     }
 
     private void configureMessageBus() {
-        this.busConnection.subscribe(Topics.RefreshTree.REFRESH_TREE_TOPIC, new Topics.RefreshTree() {
-            @Override
-            public void refreshTree() {
-                consul.setConfiguration(consulConfigurationComboBoxAction.getSelection());
-                refresh();
-                bindTreeModel();
-            }
+        this.busConnection.subscribe(Topics.RefreshTree.REFRESH_TREE_TOPIC, () -> {
+            consul.setConfiguration(consulConfigurationComboBoxAction.getSelection());
+            refresh();
+            bindTreeModel();
         });
-        this.busConnection.subscribe(Topics.ConsulConfigurationChanged.CONSUL_CONFIGURATION_CHANGED_TOPIC, new Topics.ConsulConfigurationChanged() {
-            @Override
-            public void consulConfigurationChanged(ConsulConfiguration newConfiguration) {
-                consul.setConfiguration(newConfiguration);
-                refresh();
-                bindTreeModel();
-                consulPeriodicStatusCheckController.restartPeriodicTreeStatusCheck(newConfiguration);
-            }
+        this.busConnection.subscribe(Topics.ConsulConfigurationChanged.CONSUL_CONFIGURATION_CHANGED_TOPIC, newConfiguration -> {
+            consul.setConfiguration(newConfiguration);
+            refresh();
+            bindTreeModel();
+            consulPeriodicStatusCheckController.restartPeriodicTreeStatusCheck(newConfiguration);
         });
-        this.busConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED, new Topics.KeyValueChanged() {
-            @Override
-            public void keyValueChanged(KeyAndValue keyAndValue) {
-                updateEntryAction.update(keyAndValue);
-                // prevent seeing our most recent changes as the remote changes by someone else
-                consulPeriodicStatusCheckController.clearLocalTree();
-            }
+        this.busConnection.subscribe(Topics.KeyValueChanged.KEY_VALUE_CHANGED, keyAndValue -> {
+            updateEntryAction.update(keyAndValue);
+            // prevent seeing our most recent changes as the remote changes by someone else
+            consulPeriodicStatusCheckController.clearLocalTree();
         });
     }
 

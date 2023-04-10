@@ -3,8 +3,6 @@ package com.github.novotnyr.idea.consul.scheduling.ui;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 public class PeriodicCheckSettingsPanel {
     private JPanel rootPanel;
@@ -12,12 +10,7 @@ public class PeriodicCheckSettingsPanel {
     private JSpinner periodSpinner;
 
     public PeriodicCheckSettingsPanel() {
-        this.periodicallyCheckRemoteConsulCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                periodSpinner.setEnabled(periodicallyCheckRemoteConsulCheckBox.isSelected());
-            }
-        });
+        this.periodicallyCheckRemoteConsulCheckBox.addItemListener(e -> periodSpinner.setEnabled(periodicallyCheckRemoteConsulCheckBox.isSelected()));
     }
 
     public JPanel get() {

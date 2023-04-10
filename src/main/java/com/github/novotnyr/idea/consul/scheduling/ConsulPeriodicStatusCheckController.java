@@ -26,21 +26,18 @@ public class ConsulPeriodicStatusCheckController {
     private void initMessageBus() {
         MessageBus messageBus = ApplicationManager.getApplication().getMessageBus();
         messageBus.connect()
-                .subscribe(Topics.PluginConfigurationChanged.PLUGIN_CONFIGURATION_CHANGED, new Topics.PluginConfigurationChanged() {
-                    @Override
-                    public void consulPluginConfigurationChanged() {
-                        if (consulPeriodicStatusChecker == null) {
-                            logger.debug("No Periodic Consul checker found");
-                            return;
-                        }
-                        if (!isPeriodicCheckEnabled()) {
-                            consulPeriodicStatusChecker.cancel();
-                        } else {
-                            logger.debug("Rescheduling Periodic Consul Checker");
-                            consulPeriodicStatusChecker.rescheduleWithPeriod(getPeriodInSeconds());
-                        }
-
+                .subscribe(Topics.PluginConfigurationChanged.PLUGIN_CONFIGURATION_CHANGED, () -> {
+                    if (consulPeriodicStatusChecker == null) {
+                        logger.debug("No Periodic Consul checker found");
+                        return;
                     }
+                    if (!isPeriodicCheckEnabled()) {
+                        consulPeriodicStatusChecker.cancel();
+                    } else {
+                        logger.debug("Rescheduling Periodic Consul Checker");
+                        consulPeriodicStatusChecker.rescheduleWithPeriod(getPeriodInSeconds());
+                    }
+
                 });
     }
 
@@ -60,15 +57,12 @@ public class ConsulPeriodicStatusCheckController {
         this.consulPeriodicStatusChecker.setRemoteTreeChangedListener(new ConsulPeriodicStatusChecker.OnRemoteTreeChangedListener() {
             @Override
             public void onRemoteTreeChanged(MapDifference<String, String> difference) {
-                UIUtil.invokeLaterIfNeeded(new Runnable() {
-                    @Override
-                    public void run() {
-                        String message = "Remote Consul at "
-                                + newConfiguration.getHost() + ":" + newConfiguration.getPort()
-                                + " has been updated";
-                        Notification notification = new Notification("consul", "Consul K/V updated", message, NotificationType.INFORMATION);
-                        Notifications.Bus.notify(notification);
-                    }
+                UIUtil.invokeLaterIfNeeded(() -> {
+                    String message = "Remote Consul at "
+                            + newConfiguration.getHost() + ":" + newConfiguration.getPort()
+                            + " has been updated";
+                    Notification notification = new Notification("consul", "Consul K/V updated", message, NotificationType.INFORMATION);
+                    Notifications.Bus.notify(notification);
                 });
             }
         });

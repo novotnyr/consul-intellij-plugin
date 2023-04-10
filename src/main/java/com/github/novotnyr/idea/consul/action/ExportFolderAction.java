@@ -32,11 +32,11 @@ public class ExportFolderAction extends AbstractEntryAction {
         KVNode node = this.treeModel.getNode(this.selectedKeyAndValue);
 
         FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
-        FileChooser.chooseFile(descriptor, getProject(event), null, new Consumer<VirtualFile>() {
+        FileChooser.chooseFile(descriptor, getProject(event), null, new Consumer<>() {
             @Override
             public void consume(VirtualFile virtualFile) {
                 try {
-                    ThrowableComputable<Void, Throwable> saveAction = new ThrowableComputable<Void, Throwable>() {
+                    ThrowableComputable<Void, Throwable> saveAction = new ThrowableComputable<>() {
                         @Override
                         public Void compute() throws Throwable {
                             VirtualFile childData = virtualFile.findOrCreateChildData(this, selectedKeyAndValue.getKey() + ".properties");
