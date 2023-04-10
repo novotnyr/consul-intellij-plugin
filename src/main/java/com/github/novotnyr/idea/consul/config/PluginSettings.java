@@ -127,6 +127,7 @@ public class PluginSettings implements PersistentStateComponent<PluginSettings> 
             if (isUsingTls()) {
                 url.append("https://");
             } else {
+                //noinspection HttpUrlsUsage
                 url.append("http://");
             }
             url.append(host).append(":").append(port);

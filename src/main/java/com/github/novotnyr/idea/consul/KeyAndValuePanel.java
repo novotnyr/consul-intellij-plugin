@@ -175,6 +175,6 @@ public class KeyAndValuePanel extends JPanel {
 
     public enum Mode {
         FOLDER,
-        ENTRY;
+        ENTRY
     }
 }

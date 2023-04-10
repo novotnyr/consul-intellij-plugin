@@ -49,7 +49,7 @@ public abstract class AbstractEntryAction extends AnAction {
         if(selectedItemData instanceof KeyAndValue) {
             KeyAndValue selectedKeyAndValue = (KeyAndValue) event.getData(PlatformDataKeys.SELECTED_ITEM);
             if(selectedKeyAndValue != null) {
-                this.enabled = selectedKeyAndValue != null && isEnabledForKeyAndValue(selectedKeyAndValue);;
+                this.enabled = selectedKeyAndValue != null && isEnabledForKeyAndValue(selectedKeyAndValue);
                 this.selectedKeyAndValue = selectedKeyAndValue;
             }
         }
