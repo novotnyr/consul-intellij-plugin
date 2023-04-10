@@ -71,7 +71,7 @@ public class ConsulPeriodicStatusChecker {
             } else {
                 MapDifference<String, String> difference = Maps.difference(localTree, remoteTree);
                 this.localTreeRef.set(remoteTree);
-                if (difference.entriesDiffering().isEmpty()) {
+                if (difference.areEqual()) {
                     // no differences
                     return;
                 }
