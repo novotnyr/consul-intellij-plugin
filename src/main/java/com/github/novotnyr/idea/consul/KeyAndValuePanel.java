@@ -153,7 +153,7 @@ public class KeyAndValuePanel extends JPanel {
         private boolean enabled;
 
         public SubmitChangesAction() {
-            super("Submit changes", "Submit a new value", AllIcons.Actions.Menu_saveall);
+            super("Submit changes", "Submit a new value", AllIcons.Actions.MenuSaveall);
         }
 
         @Override

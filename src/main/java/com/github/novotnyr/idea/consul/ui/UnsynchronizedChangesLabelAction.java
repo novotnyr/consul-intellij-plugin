@@ -24,9 +24,8 @@ public class UnsynchronizedChangesLabelAction extends AnAction implements Custom
         this.label.setText(UNSYNCHED_CHANGES_LABEL_TEXT);
     }
 
-    @NotNull
     @Override
-    public JComponent createCustomComponent(@NotNull Presentation presentation) {
+    public @NotNull JComponent createCustomComponent(@NotNull Presentation presentation, @NotNull String place) {
         return this.label;
     }
 
