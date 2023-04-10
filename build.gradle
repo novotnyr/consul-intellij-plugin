@@ -14,6 +14,13 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    ideaVersion = '2021.1'
+    ijPlatform = System.properties['ijPlatform']
+    if (ijPlatform != null) {
+        ideaVersion = ijPlatform
+    }
+}
 dependencies {
     implementation 'com.ecwid.consul:consul-api:1.2.2'
 
@@ -22,7 +29,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.1'
+    version = ideaVersion
     updateSinceUntilBuild = false
 }
 patchPluginXml {
