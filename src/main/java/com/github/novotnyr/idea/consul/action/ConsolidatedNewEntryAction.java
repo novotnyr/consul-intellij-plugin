@@ -7,11 +7,11 @@ import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.awt.RelativePoint;
-import com.intellij.ui.components.JBList;
 
 import javax.swing.tree.TreePath;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.List;
 
 
 public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
@@ -28,12 +28,12 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
 
     @Override
     public void run(AnActionButton button) {
-        JBList list = new JBList(NewEntryType.ITEM, NewEntryType.FOLDER);
         JBPopup popup = JBPopupFactory.getInstance()
-                .createListPopupBuilder(list)
-                .setTitle("Create New")
-                .setItemChoosenCallback(() -> onPopupListItemChoosenCallback(list))
-                .createPopup();
+                                      .createPopupChooserBuilder(List.of(NewEntryType.ITEM, NewEntryType.FOLDER))
+                                      .setTitle("Create New")
+                                      .setItemChosenCallback(this::onPopupListItemChoosenCallback)
+                                      .createPopup();
+
 
         TreePath leadSelectionPath = consulTree.getSelectionModel().getLeadSelectionPath();
         if(leadSelectionPath != null) {
@@ -52,8 +52,7 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
         }
     }
 
-    private void onPopupListItemChoosenCallback(JBList list) {
-        NewEntryType selectedValue = (NewEntryType) list.getSelectedValue();
+    private void onPopupListItemChoosenCallback(NewEntryType selectedValue) {
         switch (selectedValue) {
             case FOLDER:
                 newFolderAction.run(null);
@@ -64,6 +63,7 @@ public class ConsolidatedNewEntryAction extends AbstractConsulButtonController {
             default:
                 throw new IllegalStateException("Unknown action for new entry");
         }
+
     }
 
     @Override
