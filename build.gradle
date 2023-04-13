@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.novotnyr'
-version '5-SNAPSHOT'
+version '5'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -39,7 +39,8 @@ patchPluginXml {
     sinceBuild = '211'
     changeNotes = """
       <ul>
-          <li>
+          <li>Fix autorefresh notifications</li>
+          <li>Migrate to newer platform API</li>
       </ul>
       """
 }
