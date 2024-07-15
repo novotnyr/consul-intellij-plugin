@@ -15,7 +15,7 @@ repositories {
 }
 
 ext {
-    ideaVersion = '2021.1'
+    ideaVersion = '2022.1'
     ijPlatform = System.properties['ijPlatform']
     if (ijPlatform != null) {
         ideaVersion = ijPlatform
@@ -36,7 +36,7 @@ intellij {
     updateSinceUntilBuild = false
 }
 patchPluginXml {
-    sinceBuild = '211'
+    sinceBuild = '221'
     changeNotes = """
       <ul>
           <li></li>
