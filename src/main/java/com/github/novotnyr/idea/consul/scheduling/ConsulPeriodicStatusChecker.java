@@ -78,7 +78,7 @@ public class ConsulPeriodicStatusChecker {
                 this.remoteTreeChangedListener.onRemoteTreeChanged(difference);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 

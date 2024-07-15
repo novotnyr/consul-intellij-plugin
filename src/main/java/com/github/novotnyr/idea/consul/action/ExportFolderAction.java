@@ -9,6 +9,7 @@ import com.github.novotnyr.idea.consul.util.Icons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -21,6 +22,8 @@ import com.intellij.util.messages.MessageBus;
 import java.nio.charset.Charset;
 
 public class ExportFolderAction extends AbstractEntryAction {
+    private final Logger logger = Logger.getInstance(ExportFolderAction.class);
+
     private ConsulTreeModel treeModel;
 
     public ExportFolderAction(Consul consul, MessageBus messageBus) {
@@ -48,8 +51,7 @@ public class ExportFolderAction extends AbstractEntryAction {
 
                     WriteCommandAction.runWriteCommandAction(getProject(event), saveAction);
                 } catch (Throwable e) {
-                    // TODO fixme
-                    e.printStackTrace();
+                    logger.error(e);
                 }
             }
         });
