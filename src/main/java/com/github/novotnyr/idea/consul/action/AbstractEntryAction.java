@@ -17,7 +17,7 @@ public abstract class AbstractEntryAction extends AnAction {
 
     protected KeyAndValue selectedKeyAndValue;
 
-    private boolean enabled = false;
+    private boolean enabled;
 
     protected ConsulTreeModel treeModel;
 
