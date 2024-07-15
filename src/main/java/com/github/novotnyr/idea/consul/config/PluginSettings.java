@@ -1,7 +1,7 @@
 package com.github.novotnyr.idea.consul.config;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.annotations.Transient;
@@ -18,7 +18,7 @@ public class PluginSettings implements PersistentStateComponent<PluginSettings> 
     public static final int NO_REFRESH = -1;
 
     public static PluginSettings getInstance() {
-        return ServiceManager.getService(PluginSettings.class);
+        return ApplicationManager.getApplication().getService(PluginSettings.class);
     }
 
     private List<PersistedConsulConfiguration> consulConfigurationList = new ArrayList<>();
@@ -65,7 +65,7 @@ public class PluginSettings implements PersistentStateComponent<PluginSettings> 
     }
 
     private ConsulConfiguration persist(ConsulConfiguration consulConfiguration) {
-        CredentialRepository credentialRepository = ServiceManager.getService(CredentialRepository.class);
+        CredentialRepository credentialRepository = ApplicationManager.getApplication().getService(CredentialRepository.class);
         credentialRepository.persist(consulConfiguration);
         return consulConfiguration;
     }
@@ -73,7 +73,7 @@ public class PluginSettings implements PersistentStateComponent<PluginSettings> 
     @Transient
     public List<ConsulConfiguration> getFullConsulConfigurations() {
         List<ConsulConfiguration> configList = new ArrayList<>();
-        ConsulConfigurationRepository consulConfigurationRepository = ServiceManager.getService(ConsulConfigurationRepository.class);
+        ConsulConfigurationRepository consulConfigurationRepository = ApplicationManager.getApplication().getService(ConsulConfigurationRepository.class);
         for (PersistedConsulConfiguration persistedConfig : getConsulConfigurationList()) {
             ConsulConfiguration fullConfig
                     = consulConfigurationRepository.fromPluginSettings(persistedConfig);

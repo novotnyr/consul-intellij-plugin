@@ -3,7 +3,7 @@ package com.github.novotnyr.idea.consul.config;
 import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.credentialStore.Credentials;
 import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class CredentialRepository {
     @Nullable
     public static CredentialRepository getInstance() {
-        return ServiceManager.getService(CredentialRepository.class);
+        return ApplicationManager.getApplication().getService(CredentialRepository.class);
     }
 
     public ConsulCredentials find(PluginSettings.PersistedConsulConfiguration consulConfiguration) {
