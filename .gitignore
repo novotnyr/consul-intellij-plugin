@@ -2,7 +2,6 @@
 out/
 consul-intellij-plugin.zip
 .gradle/
-gradle/
 build/
 *.iml
 publish.sh
