@@ -115,13 +115,12 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements DumbAware, 
                 .setAddActionUpdater(this.newEntryAction)
                 .setRemoveAction(this.deleteEntryAction)
                 .setRemoveActionUpdater(this.deleteEntryAction)
-                .addExtraAction(AnActionButton.fromAction(this.exportFolderAction))
-                .addExtraAction(AnActionButton.fromAction(CommonActionsManager.getInstance()
-                        .createExpandAllAction(this.treeExpander, this.tree)))
-                .addExtraAction(AnActionButton.fromAction(CommonActionsManager.getInstance()
-                        .createCollapseAllAction(this.treeExpander, this.tree)))
+                .addExtraAction(this.exportFolderAction)
+                .addExtraAction(CommonActionsManager.getInstance()
+                        .createExpandAllAction(this.treeExpander, this.tree))
+                .addExtraAction(CommonActionsManager.getInstance()
+                        .createCollapseAllAction(this.treeExpander, this.tree))
                 .createPanel();
-
 
         this.keyAndValuePanel = new KeyAndValuePanel(this.messageBus, this.treeModel);
 

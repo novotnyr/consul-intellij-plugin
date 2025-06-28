@@ -3,6 +3,7 @@ package com.github.novotnyr.idea.consul.ui;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.actionSystem.ex.ComboBoxAction;
@@ -27,7 +28,7 @@ public abstract class AbstractComboBoxAction<T> extends ComboBoxAction {
 
     @NotNull
     @Override
-    protected DefaultActionGroup createPopupActionGroup(JComponent jComponent) {
+    protected DefaultActionGroup createPopupActionGroup(@NotNull JComponent button, @NotNull DataContext dataContext) {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
         for (T item : this.items) {
             AnAction action = new AnAction() {

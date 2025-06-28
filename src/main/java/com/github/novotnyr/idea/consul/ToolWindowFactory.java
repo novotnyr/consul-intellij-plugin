@@ -17,8 +17,7 @@ public class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFact
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         ConsulExplorer consulExplorer = new ConsulExplorer(project);
 
-        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(consulExplorer, "", false);
+        Content content = ContentFactory.getInstance().createContent(consulExplorer, "", false);
         toolWindow.getContentManager().addContent(content);
 
         if(toolWindow instanceof ToolWindowEx) {
