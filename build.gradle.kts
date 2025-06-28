@@ -35,7 +35,8 @@ intellijPlatform {
         }
         changeNotes = """
             <ul>
-            <li></li>
+            <li>Require at least Platform 2022.3</li>
+            <li>Migrate to newer platform API</li>
             </ul>
         """.trimIndent()
     }
