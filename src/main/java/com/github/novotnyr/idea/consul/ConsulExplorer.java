@@ -25,11 +25,11 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.ui.AnActionButton;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.TreeSpeedSearch;
+import com.intellij.ui.TreeUIHelper;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.ui.JBUI;
@@ -99,7 +99,7 @@ public class ConsulExplorer extends SimpleToolWindowPanel implements DumbAware, 
         initializeTreeModel();
         bindTreeModel();
         TreeUtil.installActions(tree);
-        new TreeSpeedSearch(this.tree);
+        TreeUIHelper.getInstance().installTreeSpeedSearch(this.tree);
         this.treeExpander = new DefaultTreeExpander(this.tree);
 
         this.consulPeriodicStatusCheckController = new ConsulPeriodicStatusCheckController();
