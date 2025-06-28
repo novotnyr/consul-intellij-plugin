@@ -17,7 +17,7 @@ dependencies {
     implementation("com.ecwid.consul:consul-api:1.4.5")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("commons-codec:commons-codec:1.13")
-    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
 
     testImplementation("junit:junit:4.13.2")
 

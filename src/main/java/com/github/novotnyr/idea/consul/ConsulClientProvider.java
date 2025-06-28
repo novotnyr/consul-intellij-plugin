@@ -6,9 +6,8 @@ import com.github.novotnyr.idea.consul.config.ConsulConfiguration;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 
 public class ConsulClientProvider {
@@ -34,11 +33,10 @@ public class ConsulClientProvider {
 
     protected ConsulRawClient getConsulRawClient() {
         CredentialsProvider provider = getCredentialsProvider();
-
-        AbstractHttpClient httpClient = new DefaultHttpClient();
-        httpClient.setCredentialsProvider(provider);
-        httpClient.setRedirectStrategy(new LaxRedirectStrategy());
-
+        var httpClient = HttpClients.custom()
+                                    .setDefaultCredentialsProvider(provider)
+                                    .setRedirectStrategy(new LaxRedirectStrategy())
+                                    .build();
         return new ConsulRawClient(getHost(), this.configuration.getPort(), httpClient);
     }
 
