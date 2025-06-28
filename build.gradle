@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.novotnyr'
-version '6'
+version '7-SNAPSHOT'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -39,9 +39,7 @@ patchPluginXml {
     sinceBuild = '221'
     changeNotes = """
       <ul>
-          <li>Require at least Platform 2021.1</li>
-          <li>Fix issues with icon loading in the new Platform version</li>
-          <li>Improve API compatibility</li>
+          <li></li>
       </ul>
       """
 }
